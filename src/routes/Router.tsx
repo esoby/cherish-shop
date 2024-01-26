@@ -1,38 +1,42 @@
 import { Navigate, useRoutes } from "react-router-dom";
 
-import HomePage from "@/pages/HomePage";
+import Home from "@/pages/Home";
 import MyPage from "@/pages/MyPage";
-import SignInPage from "@/pages/SignInPage";
-import SignUpPage from "@/pages/SignUpPage";
+import SignIn from "@/pages/SignIn";
+import SignUp from "@/pages/SignUp";
+import { useAuth } from "@/AuthContext";
+import SalesManagement from "@/pages/SalesManagement";
 
 export default function Router() {
   // 사용자 인증 상태 체크
-  function useAuth() {
-    return true;
-  }
   const user = useAuth();
+  const isSeller = user?.isSeller;
 
   // 라우팅 설정
   const routing = useRoutes([
     {
       path: "/",
-      element: <HomePage />,
+      element: <Home />,
     },
     {
       path: "/signin",
-      element: <SignInPage />,
+      element: !user ? <SignIn /> : <Navigate to="/" />,
     },
     {
       path: "/signup",
-      element: <SignUpPage />,
+      element: !user ? <SignUp /> : <Navigate to="/" />,
     },
     {
       path: "/mypage",
       element: user ? <MyPage /> : <Navigate to="/" />,
     },
     {
+      path: "/sales",
+      element: isSeller ? <SalesManagement /> : <Navigate to="/" />,
+    },
+    {
       path: "*",
-      element: <HomePage />,
+      element: <Home />,
     },
   ]);
 
