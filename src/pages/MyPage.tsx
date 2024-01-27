@@ -1,12 +1,17 @@
 import { useAuth } from "@/AuthContext";
 import { auth } from "@/firebase";
 import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 const MyPage = () => {
+  const navigate = useNavigate();
   const user = useAuth();
   const logOut = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
-    await signOut(auth);
+    try {
+      await signOut(auth);
+      navigate("/");
+    } catch (e) {}
   };
 
   return (
