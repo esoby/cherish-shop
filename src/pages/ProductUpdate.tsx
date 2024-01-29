@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
+
 import { db, storage } from "@/firebase";
 import { Product } from "@/interfaces/Product";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
@@ -183,10 +185,15 @@ const ProductUpdate = () => {
   // 상품 삭제
   const deleteProduct = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
+
     if (pid) {
       const docRef = doc(db, "products", pid);
       await deleteDoc(docRef);
-      navigate(`/products/${user?.userId}`);
+      toast({
+        variant: "destructive",
+        description: "상품 정보가 삭제되었습니다.",
+      });
+      setTimeout(() => navigate(`/products/${user?.userId}`), 2000);
     }
   };
 
