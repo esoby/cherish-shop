@@ -122,6 +122,16 @@ const SignUpPage = () => {
   const signUp = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
 
+    if (
+      !(
+        requiredSchema.isValidSync({ email, name, password }) &&
+        nameSchema.isValidSync(name) &&
+        emailSchema.isValidSync(email) &&
+        pwdSchema.isValidSync(password)
+      )
+    )
+      return;
+
     // 이메일 중복 확인
     const q = query(collection(db, "users"), where("email", "==", email));
     const querySnapshot = await getDocs(q);
@@ -161,7 +171,7 @@ const SignUpPage = () => {
 
   return (
     <div>
-      <form className="flex flex-col items-center gap-5 pt-20">
+      <form className="flex flex-col items-center gap-5 p-20">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Join us!
         </h2>

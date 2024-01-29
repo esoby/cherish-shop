@@ -1,7 +1,7 @@
 import { useAuth } from "@/AuthContext";
 import { auth } from "@/firebase";
 import { signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -18,7 +18,14 @@ const MyPage = () => {
     <div>
       <h1>MyPage</h1>
 
-      {user?.isSeller ? <div>판매내역</div> : <div>구매내역</div>}
+      {user?.isSeller ? (
+        <div>
+          <Link to={`/sales/${user?.userId}`}>판매 내역</Link>
+          <Link to={`/products/${user?.userId}`}>상품 관리</Link>
+        </div>
+      ) : (
+        <div>구매내역</div>
+      )}
       <button onClick={logOut}>로그아웃</button>
     </div>
   );

@@ -6,6 +6,9 @@ import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
 import { useAuth } from "@/AuthContext";
 import SalesManagement from "@/pages/SalesManagement";
+import ProductsManagement from "@/pages/ProductsManagement";
+import ProductUpload from "@/pages/ProductUpload";
+import ProductUpdate from "@/pages/ProductUpdate";
 
 export default function Router() {
   // 사용자 인증 상태 체크
@@ -27,12 +30,25 @@ export default function Router() {
       element: !user ? <SignUp /> : <Navigate to="/" />,
     },
     {
-      path: "/mypage",
+      path: "/mypage/:id",
       element: user ? <MyPage /> : <Navigate to="/" />,
     },
+    // 판매자 계정용 페이지
     {
-      path: "/sales",
+      path: "/sales/:id",
       element: isSeller ? <SalesManagement /> : <Navigate to="/" />,
+    },
+    {
+      path: "/products/:uid",
+      element: isSeller ? <ProductsManagement /> : <Navigate to="/" />,
+    },
+    {
+      path: "/productupload/:uid",
+      element: isSeller ? <ProductUpload /> : <Navigate to="/" />,
+    },
+    {
+      path: "/productupdate/:uid/:pid",
+      element: isSeller ? <ProductUpdate /> : <Navigate to="/" />,
     },
     {
       path: "*",
