@@ -1,16 +1,8 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, getDocs, Timestamp, where } from "firebase/firestore";
-
-type User = {
-  userId: string;
-  email: string;
-  isSeller: boolean;
-  nickname: string;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
-};
+import { collection, query, getDocs, where } from "firebase/firestore";
+import { User } from "@/interfaces/User";
 
 interface Props {
   children: ReactNode;
