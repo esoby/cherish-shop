@@ -155,19 +155,20 @@ const ProductUpload = () => {
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           상품 등록
         </h2>
-        <div className="relative flex gap-4 bg-slate-200 w-4/5 h-80 overflow-scroll p-4 mt-5">
-          {imageList.length > 0 ? (
-            imageList.map((img, idx) => (
-              <img className="w-72 object-contain" src={img} key={idx}></img>
-            ))
-          ) : (
-            <div className="w-full h-full flex justify-center items-center">
-              <small className="text-sm font-medium text-white">이미지를 추가해주세요.</small>
-            </div>
-          )}
-
+        <div className="relative w-4/5 bg-slate-200 h-80 p-4 mt-5">
+          <div className="relative flex gap-4  w-full h-full overflow-scroll">
+            {imageList.length > 0 ? (
+              imageList.map((img, idx) => (
+                <img className="w-72 object-contain" src={img} key={idx}></img>
+              ))
+            ) : (
+              <div className="w-full h-full flex justify-center items-center">
+                <small className="text-sm font-medium text-white">이미지를 추가해주세요.</small>
+              </div>
+            )}
+          </div>
           <div
-            className="absolute right-2 bottom-2 w-fit h-fit p-2 bg-slate-500 rounded-full cursor-pointer"
+            className="absolute right-3 bottom-3 w-fit h-fit p-2 bg-slate-500 rounded-full cursor-pointer"
             onClick={() => fileInput.current?.click()}
           >
             <ImagePlus color="#ffffff" strokeWidth={1.5} />
