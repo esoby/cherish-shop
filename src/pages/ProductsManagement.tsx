@@ -16,10 +16,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/AuthContext";
-import { Product } from "@/interfaces/Product";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import { db } from "@/firebase";
 import {
@@ -32,10 +30,13 @@ import {
   startAfter,
   where,
 } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { Product } from "@/interfaces/Product";
 import { useInView } from "react-intersection-observer";
 
 const ProductsManagement = () => {
   const user = useAuth();
+  const navigate = useNavigate();
   redirectIfNotAuthorized(user);
 
   // 상품 목록
@@ -91,62 +92,60 @@ const ProductsManagement = () => {
   }, [inView]);
 
   return (
-    <div className="w-full flex flex-col items-center p-20 gap-5">
-      <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-        상품 관리 센터
-      </h2>
-      <div>{user?.nickname}님 안녕하세요 :)</div>
-      <Link to={`/productupload/${user?.userId}`}>
-        <Button>상품 추가</Button>
-      </Link>
-      <Link to={`/`}>
-        <Button variant="outline">HOME</Button>
-      </Link>
-      {/* product list */}
-      <div className="flex flex-wrap w-5/6 pl-4">
-        {products.map((product) => (
-          <Card className="mt-10 w-56 flex flex-col p-5 h-fit gap-2 mr-4" key={product.id}>
-            {/* image carousel */}
-            <div className="flex justify-center">
-              <Carousel
-                plugins={[
-                  Autoplay({
-                    delay: 2000,
-                  }),
-                ]}
-                className="w-56 h-44"
-              >
-                <CarouselContent>
-                  {product.productImage.map((img, idx) => (
-                    <CarouselItem
-                      key={idx}
-                      className="flex items-center justify-center bg-gray-100 h-44"
-                    >
-                      <img src={img} className=""></img>{" "}
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
-            </div>
-
-            <Link to={`/productupdate/${user?.userId}/${product.id}`}>
-              <CardTitle className="pt-3">{product.productName}</CardTitle>
-              <CardDescription className="">{product.productCategory}</CardDescription>
-              <p className="flex justify-between border-b pb-1 mb-1">
-                <small className="text-sm font-medium text-gray-500">
-                  {product.productPrice}원
-                </small>
-                <small className="text-sm font-medium text-red-500">
-                  {product.productQuantity}
-                </small>
-              </p>
-              <p className="text-sm">{product.productDescription}</p>
-            </Link>
-          </Card>
-        ))}
+    <>
+      <button onClick={() => navigate(-1)}>👉🏻 뒤로가기</button>
+      <div className="w-full flex flex-col items-center p-20 gap-5">
+        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+          Product Management
+        </h2>
+        <Link to={`/productupload/${user?.userId}`}>
+          <Button>상품 추가</Button>
+        </Link>
+        {/* product list */}
+        <div className="flex flex-wrap w-5/6 pl-4">
+          {products?.map((product) => (
+            <Card className="mt-10 w-56 flex flex-col p-5 h-fit gap-2 mr-4" key={product.id}>
+              {/* image carousel */}
+              <div className="flex justify-center">
+                <Carousel
+                  plugins={[
+                    Autoplay({
+                      delay: 2000,
+                    }),
+                  ]}
+                  className="w-56 h-44"
+                >
+                  <CarouselContent>
+                    {product.productImage.map((img: string, idx: number) => (
+                      <CarouselItem
+                        key={idx}
+                        className="flex items-center justify-center bg-gray-100 h-44"
+                      >
+                        <img src={img} className=""></img>{" "}
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </Carousel>
+              </div>
+              <Link to={`/productupdate/${user?.userId}/${product.id}`}>
+                <CardTitle className="pt-3">{product.productName}</CardTitle>
+                <CardDescription className="">{product.productCategory}</CardDescription>
+                <p className="flex justify-between border-b pb-1 mb-1">
+                  <small className="text-sm font-medium text-gray-500">
+                    {product.productPrice}원
+                  </small>
+                  <small className="text-sm font-medium text-red-500">
+                    {product.productQuantity}
+                  </small>
+                </p>
+                <p className="text-sm">{product.productDescription}</p>
+              </Link>
+            </Card>
+          ))}
+        </div>
+        <div ref={ref}></div>
       </div>
-      <div ref={ref}></div>
-    </div>
+    </>
   );
 };
 
