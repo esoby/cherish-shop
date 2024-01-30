@@ -143,15 +143,18 @@ const SignInPage = () => {
             onChange={onChange}
           />
         </div>
-        <small className="ml-2 text-sm font-medium leading-none text-red-400">{errorMsg}</small>
+        <small className="text-sm font-medium leading-none text-red-400">{errorMsg}</small>
         <Button className="w-96" onClick={signIn} disabled={btnChk}>
           로그인
         </Button>
         <Button className="w-96" onClick={signInWithGoogle}>
-          구글 계정으로 로그인
+          Google 계정으로 로그인
         </Button>
-        <small className="ml-2 text-sm font-medium leading-none">
-          아직 계정이 없으신가요? 👉🏻 <Link to="/signup">가입하기</Link>
+        <small className="text-sm font-medium leading-none">
+          아직 계정이 없으신가요? 👉🏻{" "}
+          <Link className="border-b" to="/signup">
+            가입하기
+          </Link>
         </small>
       </form>
     </div>
