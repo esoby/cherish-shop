@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@radix-ui/react-toast";
 
 import { db, storage } from "@/firebase";
 import { Product } from "@/interfaces/Product";
@@ -16,6 +15,13 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import * as yup from "yup";
 import { ImagePlus } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ProductUpdate = () => {
   const user = useAuth();
@@ -30,13 +36,12 @@ const ProductUpdate = () => {
     productPrice: 0,
     productQuantity: 0,
     productDescription: "",
-    productCategory: "",
   };
 
   // 사용자 입력 값
   const [inputValues, setInputValues] = useState(initialVal);
-  const { productName, productPrice, productQuantity, productDescription, productCategory } =
-    inputValues;
+  const { productName, productPrice, productQuantity, productDescription } = inputValues;
+  const [productCategory, setProductCategory] = useState("");
   const [selectedFile, setSelectedFile] = useState<FileList | null>();
 
   const [imageUrlList, setImageUrlList] = useState<string[]>([]);
@@ -57,6 +62,8 @@ const ProductUpdate = () => {
     productCategory: yup.string().required(),
   });
 
+  const categorySchema = yup.string().required();
+
   // schema for number field validation
   const numberSchema = yup.number().integer().min(1);
 
@@ -66,7 +73,8 @@ const ProductUpdate = () => {
       requiredSchema.isValidSync({ ...inputValues }) &&
       imageUrlList.length > 0 &&
       numberSchema.isValidSync(inputValues.productPrice) &&
-      numberSchema.isValidSync(inputValues.productQuantity)
+      numberSchema.isValidSync(inputValues.productQuantity) &&
+      categorySchema.isValidSync(productCategory)
     ) {
       setErrorMsg("");
       setBtnDisabled(false);
@@ -88,6 +96,7 @@ const ProductUpdate = () => {
             ...data,
           });
           setImageUrlList([...data.productImage]);
+          setProductCategory(data.productCategory);
         }
       }
     };
@@ -152,7 +161,8 @@ const ProductUpdate = () => {
         requiredSchema.isValidSync({ ...inputValues }) &&
         imageUrlList.length > 0 &&
         numberSchema.isValidSync(inputValues.productPrice) &&
-        numberSchema.isValidSync(inputValues.productQuantity)
+        numberSchema.isValidSync(inputValues.productQuantity) &&
+        categorySchema.isValidSync(productCategory)
       )
     ) {
       setErrorMsg("입력하지 않은 정보가 존재합니다.");
@@ -193,12 +203,13 @@ const ProductUpdate = () => {
         variant: "destructive",
         description: "상품 정보가 삭제되었습니다.",
       });
-      setTimeout(() => navigate(`/products/${user?.userId}`), 2000);
+      setTimeout(() => navigate(`/products/${user?.userId}`), 1500);
     }
   };
 
   return (
     <div>
+      <Link to={`/products/${user?.userId}`}>👉🏻 뒤로가기</Link>
       <form className="flex flex-col items-center gap-5 p-20">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           상품 수정
@@ -239,6 +250,21 @@ const ProductUpdate = () => {
           />
         </div>
         <div className="grid w-full max-w-sm items-center gap-1.5">
+          <Label htmlFor="productCategory">상품 카테고리</Label>
+          <Select value={productCategory} onValueChange={(value) => setProductCategory(value)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="선택" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Category1">Category1</SelectItem>
+              <SelectItem value="Category2">Category2</SelectItem>
+              <SelectItem value="Category3">Category3</SelectItem>
+              <SelectItem value="Category4">Category4</SelectItem>
+              <SelectItem value="Category5">Category5</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="productPrice">상품 가격</Label>
           <Input
             type="number"
@@ -267,16 +293,6 @@ const ProductUpdate = () => {
             onChange={onChange}
           />
         </div>
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="productCategory">상품 카테고리</Label>
-          <Input
-            type="text"
-            id="productCategory"
-            placeholder="product category"
-            value={productCategory}
-            onChange={onChange}
-          />
-        </div>
         <small className="text-sm font-medium text-red-400">{errorMsg}</small>
         <div className="flex gap-2">
           <Button className="w-48" onClick={updateProduct} disabled={btnDisabled}>
@@ -291,7 +307,6 @@ const ProductUpdate = () => {
             상품 삭제
           </Button>
         </div>
-        <Link to={`/products/${user?.userId}`}>👉🏻 뒤로가기</Link>
         <Toaster />
       </form>
     </div>

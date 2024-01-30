@@ -212,9 +212,9 @@ const SignUpPage = () => {
             />
             <Button variant="secondary" className="w-10 ml-1 px-2.5" onClick={pwdHandler}>
               {pwdType == "password" ? (
-                <EyeOff className="text-slate-500" />
+                <EyeOff className="text-slate-400" />
               ) : (
-                <Eye className="text-slate-500" />
+                <Eye className="text-slate-400" />
               )}
             </Button>
           </div>

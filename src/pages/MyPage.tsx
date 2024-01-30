@@ -6,8 +6,11 @@ import { Link, useNavigate } from "react-router-dom";
 const MyPage = () => {
   const navigate = useNavigate();
   const user = useAuth();
-  const logOut = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+
+  // 로그아웃
+  const signOutUser = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
+    // context 초기화 필요
     try {
       await signOut(auth);
       navigate("/");
@@ -16,17 +19,23 @@ const MyPage = () => {
 
   return (
     <div>
-      <h1>MyPage</h1>
-
+      <button onClick={() => navigate(-1)}>👉🏻 뒤로가기</button>
+      <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+        MyPage
+      </h2>
       {user?.isSeller ? (
-        <div>
-          <Link to={`/sales/${user?.userId}`}>판매 내역</Link>
-          <Link to={`/products/${user?.userId}`}>상품 관리</Link>
-        </div>
+        <>
+          <p>
+            <Link to={`/products/${user?.userId}`}>👉🏻 상품 관리</Link>
+          </p>
+          <p>
+            <Link to={`/sales/${user?.userId}`}>👉🏻 판매 내역</Link>
+          </p>
+        </>
       ) : (
-        <div>구매내역</div>
+        <p>👉🏻 구매내역</p>
       )}
-      <button onClick={logOut}>로그아웃</button>
+      <button onClick={signOutUser}>👉🏻 로그아웃</button>
     </div>
   );
 };
