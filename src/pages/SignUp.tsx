@@ -105,11 +105,11 @@ const SignUpPage = () => {
   // input onChange
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const {
-      target: { name, value },
+      target: { id, value },
     } = event;
-    if (name === "email") setEmail(value);
-    if (name === "password") setPassword(value);
-    if (name === "name") setName(value);
+    if (id === "email") setEmail(value);
+    if (id === "password") setPassword(value);
+    if (id === "name") setName(value);
   };
 
   // password input type handler
@@ -177,12 +177,26 @@ const SignUpPage = () => {
         </h2>
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="email">Email</Label>
-          <Input type="email" name="email" placeholder="Email" value={email} onInput={onChange} />
+          <Input
+            type="email"
+            id="email"
+            placeholder="Email"
+            value={email}
+            onInput={onChange}
+            autoComplete="email"
+          />
           <small className="text-sm font-medium leading-none text-red-400">{emailErrMsg}</small>
         </div>
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="name">Name</Label>
-          <Input type="text" name="name" placeholder="Name" value={name} onChange={onChange} />
+          <Input
+            type="text"
+            id="name"
+            placeholder="Name"
+            value={name}
+            onChange={onChange}
+            autoComplete="username"
+          />
           <small className="text-sm font-medium leading-none text-red-400">{nameErrMsg}</small>
         </div>
         <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -190,10 +204,11 @@ const SignUpPage = () => {
           <div className="flex">
             <Input
               type={pwdType}
-              name="password"
+              id="password"
               placeholder="Password"
               value={password}
               onChange={onChange}
+              autoComplete="current-password"
             />
             <Button variant="secondary" className="w-10 ml-1 px-2.5" onClick={pwdHandler}>
               {pwdType == "password" ? (
