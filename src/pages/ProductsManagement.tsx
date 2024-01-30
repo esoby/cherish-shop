@@ -93,7 +93,7 @@ const ProductsManagement = () => {
 
   return (
     <>
-      <button onClick={() => navigate(-1)}>👉🏻 뒤로가기</button>
+      <button onClick={() => navigate("/")}>👉🏻 뒤로가기</button>
       <div className="w-full flex flex-col items-center p-20 gap-5">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Product Management
