@@ -134,6 +134,8 @@ const ProductUpload = () => {
       const newProduct = {
         sellerId: user?.userId,
         ...inputValues,
+        productPrice: parseInt(String(productPrice)),
+        productQuantity: parseInt(String(productQuantity)),
         productCategory: productCategory,
         productImage: imageURLs,
       };
