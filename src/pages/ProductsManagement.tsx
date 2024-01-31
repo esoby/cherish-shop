@@ -1,95 +1,37 @@
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/AuthContext";
-import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import { db } from "@/firebase";
-import {
-  DocumentSnapshot,
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  startAfter,
-  where,
-} from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { collection, limit, orderBy, query, where } from "firebase/firestore";
 import { Product } from "@/interfaces/Product";
-import { useInView } from "react-intersection-observer";
+import { ProductCard } from "@/components/Product/ProductCard";
+import { useInfiniteQuery } from "react-query";
+import { useDataLoad } from "@/hooks/useDataLoad";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
 const ProductsManagement = () => {
   const user = useAuth();
   const navigate = useNavigate();
-  redirectIfNotAuthorized(user);
 
-  // 상품 목록
-  const [products, setProducts] = useState<Product[]>([]);
+  const { fetchData: fetchProduct } = useDataLoad<Product>();
 
-  // 마지막 문서를 저장하는 상태
-  const [lastDoc, setLastDoc] = useState<null | DocumentSnapshot>(null);
+  let q = query(
+    collection(db, "products"),
+    where("sellerId", "==", user?.userId),
+    orderBy("updatedAt", "desc"),
+    limit(4)
+  );
 
-  // data fetching flag
-  const [fetching, setFetching] = useState(false);
-
-  // 상품 목록 조회
-  const fetchProducts = async () => {
-    setFetching(true);
-
-    let q = query(
-      collection(db, "products"),
-      where("sellerId", "==", user?.userId),
-      orderBy("updatedAt", "desc"),
-      limit(6)
-    );
-
-    // startAfter 설정
-    if (lastDoc) {
-      q = query(q, startAfter(lastDoc));
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+    "productsmanagement",
+    (context) => fetchProduct(q, context.pageParam),
+    {
+      getNextPageParam: (page) => page.lastDoc || undefined,
     }
+  );
 
-    const querySnapshot = await getDocs(q);
-    const data: Product[] = [];
-    querySnapshot.forEach((doc) => {
-      const productData = doc.data() as Product;
-      data.push({
-        ...productData,
-        id: doc.id,
-      });
-    });
-
-    // 마지막 문서 저장
-    setLastDoc(querySnapshot.docs[querySnapshot.docs.length - 1]);
-
-    setProducts((prev) => [...prev, ...data]);
-
-    if (data.length !== 0) setFetching(false);
-  };
-
-  // 스크롤이 하단에 도달했는지 감지
-  const { ref, inView } = useInView({
-    threshold: 0,
-  });
-
-  useEffect(() => {
-    if (inView && !fetching) fetchProducts();
-  }, [inView]);
+  const lastElementRef = useIntersectionObserver(isFetchingNextPage, hasNextPage, fetchNextPage);
 
   return (
     <>
@@ -103,47 +45,25 @@ const ProductsManagement = () => {
         </Link>
         {/* product list */}
         <div className="flex flex-wrap w-5/6 pl-4">
-          {products?.map((product) => (
-            <Card className="mt-10 w-56 flex flex-col p-5 h-fit gap-2 mr-4" key={product.id}>
-              {/* image carousel */}
-              <div className="flex justify-center">
-                <Carousel
-                  plugins={[
-                    Autoplay({
-                      delay: 2000,
-                    }),
-                  ]}
-                  className="w-56 h-44"
-                >
-                  <CarouselContent>
-                    {product.productImage.map((img: string, idx: number) => (
-                      <CarouselItem
-                        key={idx}
-                        className="flex items-center justify-center bg-gray-100 h-44"
-                      >
-                        <img src={img} className=""></img>{" "}
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                </Carousel>
-              </div>
-              <Link to={`/productupdate/${user?.userId}/${product.id}`}>
-                <CardTitle className="pt-3">{product.productName}</CardTitle>
-                <CardDescription className="">{product.productCategory}</CardDescription>
-                <p className="flex justify-between border-b pb-1 mb-1">
-                  <small className="text-sm font-medium text-gray-500">
-                    {product.productPrice}원
-                  </small>
-                  <small className="text-sm font-medium text-red-500">
-                    {product.productQuantity}
-                  </small>
-                </p>
-                <p className="text-sm">{product.productDescription}</p>
-              </Link>
-            </Card>
-          ))}
+          {data?.pages.flatMap((pageData, i) => {
+            return pageData.data.map((product, j) => {
+              if (i === data.pages.length - 1 && j === pageData.data.length - 1) {
+                // 마지막 요소 lastElementRef 추가
+                return (
+                  <div ref={lastElementRef} key={product.id}>
+                    <ProductCard product={product}></ProductCard>
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={product.id}>
+                    <ProductCard product={product}></ProductCard>
+                  </div>
+                );
+              }
+            });
+          })}
         </div>
-        <div ref={ref}></div>
       </div>
     </>
   );

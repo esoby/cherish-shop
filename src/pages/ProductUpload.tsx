@@ -134,6 +134,8 @@ const ProductUpload = () => {
       const newProduct = {
         sellerId: user?.userId,
         ...inputValues,
+        productPrice: parseInt(String(productPrice)),
+        productQuantity: parseInt(String(productQuantity)),
         productCategory: productCategory,
         productImage: imageURLs,
       };
@@ -163,8 +165,8 @@ const ProductUpload = () => {
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           상품 등록
         </h2>
-        <div className="relative w-4/5 bg-slate-200 h-80 p-4 mt-5">
-          <div className="relative flex gap-4  w-full h-full overflow-scroll">
+        <div className="w-4/5 h-fit relative">
+          <div className=" flex gap-4 bg-slate-200 w-full h-80 overflow-scroll scrollbar-hide p-4 mt-5 border-none box-border">
             {imageURLs.length > 0 ? (
               imageURLs.map((img, idx) => (
                 <img className="w-72 object-contain" src={img} key={idx}></img>
@@ -182,16 +184,14 @@ const ProductUpload = () => {
             <ImagePlus color="#ffffff" strokeWidth={1.5} />
           </div>
         </div>
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Input
-            className="hidden"
-            type="file"
-            multiple
-            id="productImage"
-            ref={fileInput}
-            onChange={uploadImage}
-          />
-        </div>
+        <Input
+          className="hidden"
+          type="file"
+          multiple
+          name="productImage"
+          ref={fileInput}
+          onChange={uploadImage}
+        />
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="productName">상품 이름</Label>
           <Input

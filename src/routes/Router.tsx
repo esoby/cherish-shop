@@ -9,6 +9,8 @@ import SalesManagement from "@/pages/SalesManagement";
 import ProductsManagement from "@/pages/ProductsManagement";
 import ProductUpload from "@/pages/ProductUpload";
 import ProductUpdate from "@/pages/ProductUpdate";
+import Category from "@/pages/Category";
+import ProductDetail from "@/pages/ProductDetail";
 
 export default function Router() {
   // 사용자 인증 상태 체크
@@ -20,6 +22,14 @@ export default function Router() {
     {
       path: "/",
       element: <Home />,
+    },
+    {
+      path: "/category/:cid",
+      element: <Category />,
+    },
+    {
+      path: "/productdetail/:pid",
+      element: <ProductDetail />,
     },
     {
       path: "/signin",

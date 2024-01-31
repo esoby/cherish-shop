@@ -210,20 +210,22 @@ const ProductUpdate = () => {
   return (
     <div>
       <Link to={`/products/${user?.userId}`}>👉🏻 뒤로가기</Link>
-      <form className="flex flex-col items-center gap-5 p-20">
+      <form className="flex flex-col w-full items-center gap-5 p-20">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           상품 수정
         </h2>
-        <div className="relative flex gap-4 bg-slate-200 w-4/5 h-80 overflow-scroll p-4 mt-5">
-          {imageUrlList.length > 0 ? (
-            imageUrlList.map((img, idx) => (
-              <img className="w-72 object-contain" src={img} key={idx}></img>
-            ))
-          ) : (
-            <div className="w-full h-full flex justify-center items-center">
-              <small className="text-sm font-medium text-white">이미지를 추가해주세요.</small>
-            </div>
-          )}
+        <div className="w-4/5 h-fit relative">
+          <div className=" flex gap-4 bg-slate-200 w-full h-80 overflow-scroll scrollbar-hide p-4 mt-5 border-none box-border">
+            {imageUrlList.length > 0 ? (
+              imageUrlList.map((img, idx) => (
+                <img className="w-72 object-contain" src={img} key={idx}></img>
+              ))
+            ) : (
+              <div className="w-full h-full flex justify-center items-center">
+                <small className="text-sm font-medium text-white">이미지를 추가해주세요.</small>
+              </div>
+            )}
+          </div>
           <div
             className="absolute right-2 bottom-2 w-fit h-fit p-2 bg-slate-500 rounded-full cursor-pointer"
             onClick={() => fileInput.current?.click()}
