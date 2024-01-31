@@ -43,13 +43,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       >
         <CardTitle className="pt-3">{product.productName}</CardTitle>
         <CardDescription className="">{product.productCategory}</CardDescription>
-        <p className="flex justify-between border-b pb-1 mb-1">
+        <p className="flex justify-between pb-1 mb-1">
           <small className="text-sm font-medium text-gray-500">{product.productPrice}원</small>
           {pathname.split("/")[1] == "products" && (
             <small className="text-sm font-medium text-red-500">{product.productQuantity}</small>
           )}
         </p>
-        <p className="text-sm">{product.productDescription}</p>
+        {pathname.split("/")[1] == "products" && (
+          <p className="text-sm border-t pt-1">{product.productDescription}</p>
+        )}
       </Link>
     </Card>
   );
