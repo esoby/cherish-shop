@@ -22,5 +22,5 @@ export const useImageUpload = () => {
 
   const resetImageURLs = () => setImageURLs([]); // 초기화 함수
 
-  return { imageURLs, uploadImages, resetImageURLs };
+  return { imageURLs, setImageURLs, uploadImages, resetImageURLs };
 };
