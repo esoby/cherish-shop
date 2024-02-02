@@ -1,6 +1,7 @@
 import Router from "./routes/Router";
 import { AuthProvider } from "./AuthContext";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { CartProvider } from "./contexts/CartContext";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -8,7 +9,9 @@ const App = () => {
     <div>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <Router />
+          <CartProvider>
+            <Router />
+          </CartProvider>
         </AuthProvider>
       </QueryClientProvider>
     </div>
