@@ -152,6 +152,7 @@ const ProductUpdate = () => {
           {/* product image input */}
           <ProductImageInput
             imageURLs={imageURLs}
+            setImageURLs={setImageURLs}
             uploadImages={uploadImages}
             imageFileRef={imageFileRef}
           />

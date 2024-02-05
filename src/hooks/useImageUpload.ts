@@ -17,7 +17,7 @@ export const useImageUpload = () => {
     });
     const urls = await Promise.all(uploadPromises);
     // storage에 업로드된 이미지 url list를 상태로 저장
-    setImageURLs(urls);
+    setImageURLs((prev) => [...prev, ...urls]);
   };
 
   const resetImageURLs = () => setImageURLs([]); // 초기화 함수
