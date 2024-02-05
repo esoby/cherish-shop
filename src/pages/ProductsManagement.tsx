@@ -9,9 +9,10 @@ import { ProductCard } from "@/components/Product/ProductCard";
 import { useInfiniteQuery } from "react-query";
 import { useDataLoad } from "@/hooks/useDataLoad";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import NavBar from "@/components/Common/NavBar";
 
 const ProductsManagement = () => {
-  const user = useAuth();
+  const { user } = useAuth() || {};
   const navigate = useNavigate();
 
   const { fetchData: fetchProduct } = useDataLoad<Product>();
@@ -35,8 +36,8 @@ const ProductsManagement = () => {
 
   return (
     <>
-      <button onClick={() => navigate("/")}>👉🏻 뒤로가기</button>
-      <div className="w-full flex flex-col items-center p-20 gap-5">
+      <NavBar />
+      <div className="w-full flex flex-col items-center p-20 mt-16 gap-5">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Product Management
         </h2>

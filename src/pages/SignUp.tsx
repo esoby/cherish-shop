@@ -170,8 +170,8 @@ const SignUpPage = () => {
   };
 
   return (
-    <div>
-      <form className="flex flex-col items-center gap-5 p-20">
+    <div className="p-20 mt-16">
+      <form className="flex flex-col items-center gap-5">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Join us!
         </h2>

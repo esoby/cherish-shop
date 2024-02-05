@@ -53,7 +53,7 @@ type ProductsInCart = {
 };
 
 const CartContainer = () => {
-  const user = useAuth();
+  const { user } = useAuth() || {};
   const { pid } = useParams();
   const { fetchData: fetchCart } = useDataLoad<Cart>();
 
@@ -247,6 +247,7 @@ const CartContainer = () => {
                     id={`chk-${idx}`}
                     checked={checkedItems[idx]}
                     onCheckedChange={() => handleCheckChange(idx)}
+                    tabIndex={-1}
                   />
                 </TableCell>
               </TableRow>

@@ -15,9 +15,10 @@ import { query, collection, orderBy, where, limit, Query } from "firebase/firest
 import { useInfiniteQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import NavBar from "@/components/Common/NavBar";
 
 const Category = () => {
-  const user = useAuth();
+  const { user } = useAuth() || {};
   const { cid } = useParams();
   const { fetchData } = useDataLoad<Product>();
   const navigate = useNavigate();
@@ -49,8 +50,8 @@ const Category = () => {
 
   return (
     <>
-      <button onClick={() => navigate(-1)}>👉🏻 뒤로가기</button>
-      <div className="w-full flex flex-col items-center p-20">
+      <NavBar />
+      <div className="w-full flex flex-col items-center p-20 mt-16">
         <h2 className="scroll-m-20 border-b pb-10 text-3xl font-semibold tracking-tight first:mt-0">
           {cid}
         </h2>

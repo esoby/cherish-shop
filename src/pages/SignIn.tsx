@@ -68,13 +68,13 @@ const SignInPage = () => {
           setErrorMsg("이메일 혹은 비밀번호가 일치하지 않습니다.");
           break;
         case "auth/network-request-failed":
-          alert("네트워크 연결에 실패 하였습니다.");
+          setErrorMsg("네트워크 연결에 실패 하였습니다.");
           break;
         case "auth/internal-error":
-          alert("잘못된 요청입니다.");
+          setErrorMsg("잘못된 요청입니다.");
           break;
         default:
-          alert("로그인에 실패 하였습니다.");
+          setErrorMsg("로그인에 실패 하였습니다.");
       }
     }
   };
@@ -124,8 +124,8 @@ const SignInPage = () => {
   }, []);
 
   return (
-    <div>
-      <form className="flex flex-col items-center gap-5 p-20">
+    <div className="p-20 mt-16">
+      <form className="flex flex-col items-center gap-5">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Sign in
         </h2>
