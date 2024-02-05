@@ -24,13 +24,12 @@ export const ProductCategory = ({ category }: ProductCardProps) => {
   const { data } = useQuery(category, () => fetchData(q, null));
 
   return (
-    <div className="w-full border-b p-6 hover:bg-slate-100">
+    <div className="w-full border-b p-6 hover:bg-slate-100 overflow-scroll">
       <Link className="cursor-pointer" to={`/category/${category}`}>
-        <div className="flex items-center">
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight mr-4">{category}</h4>
-          <ChevronRight color="#757575" />
-        </div>
-        <div className="w-56 flex p-5 h-fit gap-2 mr-4">
+        <h4 className="text-xl font-semibold tracking-tight absolute flex gap-4 items-center">
+          {category} <ChevronRight color="#757575" />
+        </h4>
+        <div className="w-56 flex p-5 h-fit gap-2 mr-3 mt-6">
           {data?.data.map((product, i) => (
             <ProductCard product={product} key={i}></ProductCard>
           ))}

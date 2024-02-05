@@ -78,11 +78,6 @@ const ProductDetail = () => {
     )
   );
 
-  // // 현재 유저의 전체 장바구니 데이터 가져오기
-  // const { data: cartDatas } = useQuery(["allcartproduct"], () =>
-  //   fetchCart(query(collection(db, "cart"), where("userId", "==", user?.userId)), null)
-  // );
-
   type UploadDataType = {
     userId: string;
     productId: string;
@@ -149,7 +144,7 @@ const ProductDetail = () => {
                     key={idx}
                     className="flex items-center justify-center bg-gray-100 h-96"
                   >
-                    <img src={img} className=""></img>
+                    <img src={img} className="h-full object-contain"></img>
                   </CarouselItem>
                 ))}
               </CarouselContent>
@@ -160,7 +155,7 @@ const ProductDetail = () => {
               {product?.productName}
             </h2>
             <p className="text-sm text-muted-foreground">{product?.productCategory}</p>
-            <p className="mt-4">상세 설명 : {product?.productDescription}</p>
+            <p className="w-full mt-4 break-words">상세 설명 : {product?.productDescription}</p>
             <blockquote className="mt-6 border-l-2 pl-6 italic">
               {product?.productPrice}원
             </blockquote>

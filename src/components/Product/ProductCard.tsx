@@ -50,7 +50,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           )}
         </p>
         {pathname.split("/")[1] == "products" && (
-          <p className="text-sm border-t pt-1">{product.productDescription}</p>
+          <p className="text-sm border-t pt-1 break-words">{product.productDescription}</p>
         )}
       </Link>
     </Card>
