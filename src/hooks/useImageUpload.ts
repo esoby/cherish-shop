@@ -8,8 +8,8 @@ export const useImageUpload = () => {
   const [imageURLs, setImageURLs] = useState<string[]>([]);
 
   // 이미지 파일 스토리지에 업로드
-  const uploadImages = async (selectedFile: FileList) => {
-    const uploadPromises = Array.from(selectedFile).map((file) => {
+  const uploadImages = async (selectedFiles: File[]) => {
+    const uploadPromises = Array.from(selectedFiles).map((file) => {
       // 파일 이름 설정 - 원본 이름 + 타임스탬프
       let fileName = file.name.split(".")[0] + new Date().getTime();
       const imageRef = ref(storage, `${user?.userId}/${fileName}`);
