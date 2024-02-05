@@ -1,15 +1,21 @@
 import { ImagePlus, X } from "lucide-react";
 import { Input } from "../ui/input";
-import { ChangeEvent, RefObject, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, RefObject, SetStateAction, useEffect, useState } from "react";
 import { deleteObject, getStorage, ref } from "firebase/storage";
 
 interface ProductImageInputProps {
   imageURLs: string[];
+  setImageURLs: Dispatch<SetStateAction<string[]>>;
   uploadImages: (selectedFiles: File[]) => Promise<void>;
   imageFileRef: RefObject<HTMLInputElement>;
 }
 
-const ProductImageInput = ({ imageURLs, uploadImages, imageFileRef }: ProductImageInputProps) => {
+const ProductImageInput = ({
+  imageURLs,
+  setImageURLs,
+  uploadImages,
+  imageFileRef,
+}: ProductImageInputProps) => {
   // input file type list
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -23,26 +29,30 @@ const ProductImageInput = ({ imageURLs, uploadImages, imageFileRef }: ProductIma
     }
   };
 
-  const onFileDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, idx: number) => {
+  const deleteImage = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    url: string,
+    idx: number
+  ) => {
     event.preventDefault();
-    setSelectedFiles((prev) => [...prev.slice(0, idx), ...prev.slice(idx + 1)]);
+    const storage = getStorage();
+    let decodedFilePath = decodeURIComponent(url.split("/o/")[1].split("?")[0]);
+    let fileRef = ref(storage, decodedFilePath);
+    deleteObject(fileRef)
+      .then(() => {})
+      .catch((error) => {});
+
+    setImageURLs((prev) => [...prev.slice(0, idx), ...prev.slice(idx + 1)]);
   };
 
   // Upload image to storage as selectedFile change
   useEffect(() => {
+    const upload = async () => {
+      await uploadImages(selectedFiles);
+    };
     if (selectedFiles.length > 0) {
-      if (imageURLs.length) {
-        // 기존 이미지 파일 삭제
-        const storage = getStorage();
-        imageURLs.forEach((imgUrl) => {
-          let decodedFilePath = decodeURIComponent(imgUrl.split("/o/")[1].split("?")[0]);
-          let fileRef = ref(storage, decodedFilePath);
-          deleteObject(fileRef)
-            .then(() => {})
-            .catch((error) => {});
-        });
-      }
-      uploadImages(selectedFiles);
+      upload();
+      setSelectedFiles([]);
     }
   }, [selectedFiles]);
 
@@ -54,7 +64,7 @@ const ProductImageInput = ({ imageURLs, uploadImages, imageFileRef }: ProductIma
             imageURLs.map((img, idx) => (
               <div className="flex-shrink-0 relative" key={idx}>
                 <img className="w-full h-full" src={img}></img>
-                <button onClick={(e) => onFileDelete(e, idx)}>
+                <button onClick={(e) => deleteImage(e, img, idx)}>
                   <div
                     className="w-4 h-4 p-0.5 bg-slate-700
                       rounded-full absolute -right-1 -top-1 flex justify-center items-center"

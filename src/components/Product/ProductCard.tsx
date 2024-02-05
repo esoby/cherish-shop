@@ -28,7 +28,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <CarouselContent>
             {product.productImage.map((img: string, idx: number) => (
               <CarouselItem key={idx} className="flex items-center justify-center bg-gray-100 h-44">
-                <img src={img} className=""></img>{" "}
+                <img src={img} className="w-full h-full object-cover"></img>{" "}
               </CarouselItem>
             ))}
           </CarouselContent>
