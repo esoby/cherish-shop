@@ -13,9 +13,10 @@ import * as yup from "yup";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import ProductImageInput from "@/components/Product/ProductImageInput";
 import ProductInfoInput from "@/components/Product/ProductInfoInput";
+import NavBar from "@/components/Common/NavBar";
 
 const ProductUpdate = () => {
-  const user = useAuth();
+  const { user } = useAuth() || {};
   redirectIfNotAuthorized(user);
 
   const { pid } = useParams();
@@ -141,32 +142,34 @@ const ProductUpdate = () => {
   };
 
   return (
-    <div>
-      <Link to={`/products/${user?.userId}`}>👉🏻 뒤로가기</Link>
-      <form className="flex flex-col w-full items-center gap-5 p-20">
-        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          상품 수정
-        </h2>
-        {/* product image input */}
-        <ProductImageInput
-          imageURLs={imageURLs}
-          uploadImages={uploadImages}
-          imageFileRef={imageFileRef}
-        />
-        {/* product info input list */}
-        <ProductInfoInput inputValues={inputValues} setInputValues={setInputValues} />
-        <small className="text-sm font-medium text-red-400">{errorMsg}</small>
-        <div className="flex gap-2">
-          <Button className="w-48" onClick={updateProduct} disabled={btnDisabled}>
+    <>
+      <NavBar />
+      <div className="w-full p-20 mt-16">
+        <form className="flex flex-col w-full items-center gap-5">
+          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
             상품 수정
-          </Button>
-          <Button variant="destructive" className="w-48" onClick={deleteProduct}>
-            상품 삭제
-          </Button>
-        </div>
-        <Toaster />
-      </form>
-    </div>
+          </h2>
+          {/* product image input */}
+          <ProductImageInput
+            imageURLs={imageURLs}
+            uploadImages={uploadImages}
+            imageFileRef={imageFileRef}
+          />
+          {/* product info input list */}
+          <ProductInfoInput inputValues={inputValues} setInputValues={setInputValues} />
+          <small className="text-sm font-medium text-red-400">{errorMsg}</small>
+          <div className="flex gap-2">
+            <Button className="w-48" onClick={updateProduct} disabled={btnDisabled}>
+              상품 수정
+            </Button>
+            <Button variant="destructive" className="w-48" onClick={deleteProduct}>
+              상품 삭제
+            </Button>
+          </div>
+          <Toaster />
+        </form>
+      </div>
+    </>
   );
 };
 

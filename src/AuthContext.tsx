@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "@/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, getDocs, where } from "firebase/firestore";
 import { User } from "@/interfaces/User";
 
@@ -8,7 +8,12 @@ interface Props {
   children: ReactNode;
 }
 
-const AuthContext = createContext<User | null>(null);
+interface AuthContextValue {
+  user: User | null;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null);
 
 export const useAuth = () => useContext(AuthContext);
 
@@ -16,6 +21,14 @@ export const AuthProvider = ({ children }: Props) => {
   const [currUser, setCurrUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setCurrUser(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
     return onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -41,5 +54,5 @@ export const AuthProvider = ({ children }: Props) => {
 
   if (loading) return <div>Loading...</div>;
 
-  return <AuthContext.Provider value={currUser}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user: currUser, logout }}>{children}</AuthContext.Provider>;
 };

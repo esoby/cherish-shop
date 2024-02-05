@@ -10,7 +10,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
-  const user = useAuth();
+  const { user } = useAuth() || {};
   const { pathname } = useLocation();
 
   return (

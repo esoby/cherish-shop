@@ -14,7 +14,7 @@ import ProductDetail from "@/pages/ProductDetail";
 
 export default function Router() {
   // 사용자 인증 상태 체크
-  const user = useAuth();
+  const { user } = useAuth() || {};
   const isSeller = user?.isSeller;
 
   // 라우팅 설정

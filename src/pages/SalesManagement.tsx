@@ -1,15 +1,18 @@
 import { useAuth } from "@/AuthContext";
+import NavBar from "@/components/Common/NavBar";
 import { useNavigate } from "react-router-dom";
 
 const SalesManagement = () => {
-  const user = useAuth();
+  const { user } = useAuth() || {};
   const navigate = useNavigate();
 
   return (
-    <div>
-      <button onClick={() => navigate(-1)}>👉🏻 뒤로가기</button>
-      <h1>Sale Page</h1>
-    </div>
+    <>
+      <NavBar />
+      <div className="w-full flex flex-col items-center p-20 mt-16 gap-5">
+        <h1>Sale Page</h1>
+      </div>
+    </>
   );
 };
 

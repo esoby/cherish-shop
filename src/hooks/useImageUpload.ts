@@ -4,7 +4,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useState } from "react";
 
 export const useImageUpload = () => {
-  const user = useAuth();
+  const { user } = useAuth() || {};
   const [imageURLs, setImageURLs] = useState<string[]>([]);
 
   // 이미지 파일 스토리지에 업로드
