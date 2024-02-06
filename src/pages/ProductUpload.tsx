@@ -29,7 +29,7 @@ const ProductUpload = () => {
   // 사용자 입력 값
   const [inputValues, setInputValues] = useState(initialInputVal);
   // upload image and get storage url list
-  const { imageURLs, uploadImages, resetImageURLs } = useImageUpload();
+  const { imageURLs, setImageURLs, uploadImages, resetImageURLs } = useImageUpload();
   // input file ref
   const imageFileRef = useRef<HTMLInputElement>(null);
   // 상품 등록 버튼 disabled
@@ -114,6 +114,7 @@ const ProductUpload = () => {
           {/* product image input */}
           <ProductImageInput
             imageURLs={imageURLs}
+            setImageURLs={setImageURLs}
             uploadImages={uploadImages}
             imageFileRef={imageFileRef}
           />
