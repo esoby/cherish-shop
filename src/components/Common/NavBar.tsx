@@ -29,7 +29,7 @@ const NavBar = () => {
 
   return (
     <NavigationMenu>
-      <NavigationMenuList className="w-screen flex border-b p-7 fixed bg-white ">
+      <NavigationMenuList className="w-screen flex border-b pl-10 pr-6 py-4 fixed bg-white ">
         <NavigationMenuItem className="flex-grow h-">
           <Link to={"/"}>
             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">히커머스</h3>
@@ -38,30 +38,29 @@ const NavBar = () => {
         {user &&
           (user?.isSeller ? (
             <NavigationMenuItem>
-              <Link to={`/products/${user?.userId}`}>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  <p className="text-green-800">PRODUCT</p>
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                href={`/products/${user?.userId}`}
+                className={navigationMenuTriggerStyle()}
+              >
+                <p className="text-green-800">PRODUCT</p>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           ) : (
             <>
               <NavigationMenuItem>
-                <Link to={"/community"}>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    COMMUNITY
-                  </NavigationMenuLink>
-                </Link>
+                <NavigationMenuLink href={`/community`} className={navigationMenuTriggerStyle()}>
+                  COMMUNITY
+                </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Sheet>
                   <SheetTrigger asChild className={navigationMenuTriggerStyle()}>
-                    <p className="cursor-pointer relative">
+                    <div className="cursor-pointer relative">
                       <ShoppingCart />
                       <div className="w-4 h-4 bg-red-500 rounded-full text-[10px] flex justify-center items-center text-white absolute right-1 top-1">
-                        {cartDatas?.data.length}
+                        {cartDatas?.data.length || 0}
                       </div>
-                    </p>
+                    </div>
                   </SheetTrigger>
                   <CartContainer />
                 </Sheet>
@@ -70,19 +69,18 @@ const NavBar = () => {
           ))}
         {user ? (
           <NavigationMenuItem>
-            <Link to={`/mypage/${user?.userId}`}>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                MYPAGE
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink
+              href={`/mypage/${user?.userId}`}
+              className={navigationMenuTriggerStyle()}
+            >
+              MYPAGE
+            </NavigationMenuLink>
           </NavigationMenuItem>
         ) : (
           <NavigationMenuItem>
-            <Link to={`/signin`}>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                LOGIN
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink href={`/signin`} className={navigationMenuTriggerStyle()}>
+              LOGIN
+            </NavigationMenuLink>
           </NavigationMenuItem>
         )}
       </NavigationMenuList>

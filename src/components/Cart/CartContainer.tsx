@@ -197,7 +197,7 @@ const CartContainer = () => {
   };
 
   return (
-    <SheetContent className="overflow-scroll">
+    <SheetContent className="overflow-scroll animate-slide-in-from-right">
       <SheetHeader>
         <SheetTitle>장바구니</SheetTitle>
         <SheetDescription>장바구니에 담은 상품 목록입니다.</SheetDescription>
@@ -220,6 +220,7 @@ const CartContainer = () => {
                   <Input
                     className="w-10 h-9 appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     type="number"
+                    id={`quantity${idx}`}
                     value={quantities[idx]}
                     onChange={onChange(idx)}
                     tabIndex={-1}
@@ -260,13 +261,18 @@ const CartContainer = () => {
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-right py-4">
         Total : {productsInCart.reduce((a, c) => a + c.productPrice * c.cartQuantity, 0)}원
       </h4>
-      <SheetFooter className="flex items-center">
-        <Button variant="outline" className="w-1/2 text-lg h-12" onClick={deleteCheckedItems}>
+      <SheetFooter className="flex items-center focus:outline-none">
+        <Button
+          variant="outline"
+          className="w-1/2 h-12 focus:outline-none"
+          onClick={deleteCheckedItems}
+          tabIndex={-1}
+        >
           선택 상품 삭제하기
         </Button>
-        <button className="w-1/2" onClick={() => {}}>
-          <Button className="text-lg h-12 w-full">선택 상품 주문하기</Button>
-        </button>
+        <Button className="h-12 w-1/2 focus:outline-none" tabIndex={-1}>
+          선택 상품 주문하기
+        </Button>
       </SheetFooter>
     </SheetContent>
   );

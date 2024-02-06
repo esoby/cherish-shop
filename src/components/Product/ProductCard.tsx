@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Card, CardDescription, CardTitle } from "../ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
@@ -12,9 +12,19 @@ interface ProductCardProps {
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { user } = useAuth() || {};
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   return (
-    <Card className="w-56 flex flex-col p-5 h-fit gap-2 mr-4">
+    <Card
+      className="w-56 flex flex-col p-5 h-fit gap-2 mr-4"
+      onClick={() =>
+        navigate(
+          pathname.split("/")[1] == "products"
+            ? `/productupdate/${user?.userId}/${product.id}`
+            : `/productdetail/${product.id}`
+        )
+      }
+    >
       {/* image carousel */}
       <div className="flex justify-center">
         <Carousel
@@ -34,25 +44,17 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </CarouselContent>
         </Carousel>
       </div>
-      <Link
-        to={
-          pathname.split("/")[1] == "products"
-            ? `/productupdate/${user?.userId}/${product.id}`
-            : `/productdetail/${product.id}`
-        }
-      >
-        <CardTitle className="pt-3">{product.productName}</CardTitle>
-        <CardDescription className="">{product.productCategory}</CardDescription>
-        <p className="flex justify-between pb-1 mb-1">
-          <small className="text-sm font-medium text-gray-500">{product.productPrice}원</small>
-          {pathname.split("/")[1] == "products" && (
-            <small className="text-sm font-medium text-red-500">{product.productQuantity}</small>
-          )}
-        </p>
+      <CardTitle className="pt-3">{product.productName}</CardTitle>
+      <CardDescription className="">{product.productCategory}</CardDescription>
+      <p className="flex justify-between pb-1 mb-1">
+        <small className="text-sm font-medium text-gray-500">{product.productPrice}원</small>
         {pathname.split("/")[1] == "products" && (
-          <p className="text-sm border-t pt-1 break-words">{product.productDescription}</p>
+          <small className="text-sm font-medium text-red-500">{product.productQuantity}</small>
         )}
-      </Link>
+      </p>
+      {pathname.split("/")[1] == "products" && (
+        <p className="text-sm border-t pt-1 break-words">{product.productDescription}</p>
+      )}
     </Card>
   );
 };
