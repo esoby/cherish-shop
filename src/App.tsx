@@ -1,20 +1,19 @@
-import Router from "./routes/Router";
+import AppRouter from "./routes/Router";
 import { AuthProvider } from "./AuthContext";
 import { QueryClient, QueryClientProvider } from "react-query";
-// import { CartProvider } from "./contexts/CartContext";
+
+import { BrowserRouter as Router } from "react-router-dom";
 
 const App = () => {
   const queryClient = new QueryClient();
   return (
-    <div>
+    <Router>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          {/* <CartProvider> */}
-          <Router />
-          {/* </CartProvider> */}
+          <AppRouter />
         </AuthProvider>
       </QueryClientProvider>
-    </div>
+    </Router>
   );
 };
 
