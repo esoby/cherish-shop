@@ -1,70 +1,69 @@
-import { Navigate, useRoutes } from "react-router-dom";
-
-import Home from "@/pages/Home";
-import MyPage from "@/pages/MyPage";
-import SignIn from "@/pages/SignIn";
-import SignUp from "@/pages/SignUp";
+import { Navigate, Routes, Route } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import { useAuth } from "@/AuthContext";
-import SalesManagement from "@/pages/SalesManagement";
-import ProductsManagement from "@/pages/ProductsManagement";
-import ProductUpload from "@/pages/ProductUpload";
-import ProductUpdate from "@/pages/ProductUpdate";
-import Category from "@/pages/Category";
-import ProductDetail from "@/pages/ProductDetail";
 
-export default function Router() {
-  // 사용자 인증 상태 체크
+const Home = lazy(() => import("@/pages/Home"));
+const MyPage = lazy(() => import("@/pages/MyPage"));
+const SignIn = lazy(() => import("@/pages/SignIn"));
+const SignUp = lazy(() => import("@/pages/SignUp"));
+const SalesManagement = lazy(() => import("@/pages/SalesManagement"));
+const ProductsManagement = lazy(() => import("@/pages/ProductsManagement"));
+const ProductUpload = lazy(() => import("@/pages/ProductUpload"));
+const ProductUpdate = lazy(() => import("@/pages/ProductUpdate"));
+const Category = lazy(() => import("@/pages/Category"));
+const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
+
+function SignInRoute() {
   const { user } = useAuth() || {};
-  const isSeller = user?.isSeller;
+  return user ? <Navigate replace to="/" /> : <SignIn />;
+}
 
-  // 라우팅 설정
-  const routing = useRoutes([
-    {
-      path: "/",
-      element: <Home />,
-    },
-    {
-      path: "/category/:cid",
-      element: <Category />,
-    },
-    {
-      path: "/productdetail/:pid",
-      element: <ProductDetail />,
-    },
-    {
-      path: "/signin",
-      element: !user ? <SignIn /> : <Navigate to="/" />,
-    },
-    {
-      path: "/signup",
-      element: !user ? <SignUp /> : <Navigate to="/" />,
-    },
-    {
-      path: "/mypage/:id",
-      element: user ? <MyPage /> : <Navigate to="/" />,
-    },
-    // 판매자 계정용 페이지
-    {
-      path: "/sales/:id",
-      element: isSeller ? <SalesManagement /> : <Navigate to="/" />,
-    },
-    {
-      path: "/products/:uid",
-      element: isSeller ? <ProductsManagement /> : <Navigate to="/" />,
-    },
-    {
-      path: "/productupload/:uid",
-      element: isSeller ? <ProductUpload /> : <Navigate to="/" />,
-    },
-    {
-      path: "/productupdate/:uid/:pid",
-      element: isSeller ? <ProductUpdate /> : <Navigate to="/" />,
-    },
-    {
-      path: "*",
-      element: <Home />,
-    },
-  ]);
+function SignUpRoute() {
+  const { user } = useAuth() || {};
+  return user ? <Navigate replace to="/" /> : <SignUp />;
+}
 
-  return routing;
+function MyPageRoute() {
+  const { user } = useAuth() || {};
+  return user ? <MyPage /> : <Navigate replace to="/" />;
+}
+
+function SalesManagementRoute() {
+  const { user } = useAuth() || {};
+  return user?.isSeller ? <SalesManagement /> : <Navigate replace to="/" />;
+}
+
+function ProductsManagementRoute() {
+  const { user } = useAuth() || {};
+  return user?.isSeller ? <ProductsManagement /> : <Navigate replace to="/" />;
+}
+
+function ProductUploadRoute() {
+  const { user } = useAuth() || {};
+  return user?.isSeller ? <ProductUpload /> : <Navigate replace to="/" />;
+}
+
+function ProductUpdateRoute() {
+  const { user } = useAuth() || {};
+  return user?.isSeller ? <ProductUpdate /> : <Navigate replace to="/" />;
+}
+
+export default function AppRouter() {
+  return (
+    <Suspense fallback={<div className=""></div>}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/category/:cid" element={<Category />} />
+        <Route path="/productdetail/:pid" element={<ProductDetail />} />
+        <Route path="/signin" element={<SignInRoute />} />
+        <Route path="/signup" element={<SignUpRoute />} />
+        <Route path="/mypage/:id" element={<MyPageRoute />} />
+        <Route path="/sales/:id" element={<SalesManagementRoute />} />
+        <Route path="/products/:uid" element={<ProductsManagementRoute />} />
+        <Route path="/productupload/:uid" element={<ProductUploadRoute />} />
+        <Route path="/productupdate/:uid/:pid" element={<ProductUpdateRoute />} />
+        <Route path="*" element={<Home />} />
+      </Routes>
+    </Suspense>
+  );
 }
