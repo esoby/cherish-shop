@@ -66,20 +66,20 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        slideInFromRight: {
-          "0%": { transform: "translateX(100%)" },
-          "100%": { transform: "translateX(0)" },
+        "slide-in-from-right": {
+          from: { transform: "translateX(100%)" },
+          to: { transform: "translateX(0)" },
         },
-        slideOutToRight: {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(100%)" },
+        "slide-out-to-right": {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(100%)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "slide-in-from-right": "slideInFromRight 500ms",
-        "slide-out-to-right": "slideOutToRight 300ms",
+        "slide-in-from-right": "slide-in-from-right 500ms",
+        "slide-out-to-right": "slide-out-to-right 300ms",
       },
     },
   },
