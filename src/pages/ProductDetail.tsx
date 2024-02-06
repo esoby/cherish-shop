@@ -97,7 +97,7 @@ const ProductDetail = () => {
   );
 
   // 장바구니 추가 버튼 클릭
-  const addToCart = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const addToCart = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.preventDefault();
     try {
       if (pid) {
@@ -151,24 +151,24 @@ const ProductDetail = () => {
             </Carousel>
           </div>
           <div className="my-5 flex flex-col items-start w-80">
-            <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+            <h4 className="scroll-m-20 border-b mb-2 text-2xl font-semibold tracking-tight first:mt-0">
               {product?.productName}
-            </h2>
+            </h4>
             <p className="text-sm text-muted-foreground">{product?.productCategory}</p>
-            <p className="w-full mt-4 break-words">상세 설명 : {product?.productDescription}</p>
+            <p className="w-full mt-4 break-words">- {product?.productDescription}</p>
             <blockquote className="mt-6 border-l-2 pl-6 italic">
               {product?.productPrice}원
             </blockquote>
           </div>
           <Sheet>
             <div className="flex gap-2">
-              <button onClick={addToCart}>
+              <div onClick={addToCart}>
                 <SheetTrigger asChild>
                   <Button className="w-44">
                     {cartData?.data.length ? "장바구니 보기" : "장바구니 추가"}
                   </Button>
                 </SheetTrigger>
-              </button>
+              </div>
               <Button variant="outline" className="w-44">
                 바로 구매하기
               </Button>
@@ -178,7 +178,7 @@ const ProductDetail = () => {
         </div>
         {/* 동일 카테고리 제품 추천 */}
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mt-32 ml-8">
-          이런 상품은 어때요?
+          {anotherProduct?.length ? "이런 상품은 어때요?" : ""}
         </h3>
         <div className="w-56 flex p-5 h-fit gap-2">
           {anotherProduct?.map((pro, i) => (

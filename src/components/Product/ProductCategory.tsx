@@ -25,7 +25,7 @@ export const ProductCategory = ({ category }: ProductCardProps) => {
 
   return (
     <div className="w-full border-b p-6 hover:bg-slate-100 overflow-scroll">
-      <Link className="cursor-pointer" to={`/category/${category}`}>
+      <Link className="cursor-pointer w-full" to={`/category/${category}`}>
         <h4 className="text-xl font-semibold tracking-tight absolute flex gap-4 items-center">
           {category} <ChevronRight color="#757575" />
         </h4>

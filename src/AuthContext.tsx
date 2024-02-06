@@ -3,6 +3,7 @@ import { auth, db } from "@/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, getDocs, where } from "firebase/firestore";
 import { User } from "@/interfaces/User";
+import { Loader2 } from "lucide-react";
 
 interface Props {
   children: ReactNode;
@@ -52,7 +53,12 @@ export const AuthProvider = ({ children }: Props) => {
     });
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="animate-spin flex w-screen h-screen justify-center items-center">
+        <Loader2 size={40} color="#5c5c5c" />
+      </div>
+    );
 
   return <AuthContext.Provider value={{ user: currUser, logout }}>{children}</AuthContext.Provider>;
 };

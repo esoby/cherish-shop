@@ -14,34 +14,31 @@ const Home = () => {
   const { user } = useAuth() || {};
   redirectIfNotAuthorized(user);
 
-  const { fetchData } = useDataLoad<Product>();
+  // const { fetchData } = useDataLoad<Product>();
   const category = ["Category1", "Category2", "Category3", "Category4", "Category5"];
 
-  const q = query(collection(db, "products"), orderBy("updatedAt", "desc"), limit(6));
+  // const q = query(collection(db, "products"), orderBy("updatedAt", "desc"), limit(6));
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
-    "home",
-    (context) => fetchData(q, context.pageParam),
-    {
-      getNextPageParam: (lastPage) => lastPage.lastDoc || undefined,
-    }
-  );
+  // const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+  //   "home",
+  //   (context) => fetchData(q, context.pageParam),
+  //   {
+  //     getNextPageParam: (lastPage) => lastPage.lastDoc || undefined,
+  //   }
+  // );
 
-  const lastElementRef = useIntersectionObserver(isFetchingNextPage, hasNextPage, fetchNextPage);
+  // const lastElementRef = useIntersectionObserver(isFetchingNextPage, hasNextPage, fetchNextPage);
 
   return (
     <>
       <NavBar />
       <div className="w-full flex flex-col items-center p-20 mt-16">
-        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight">
-          어서오세요
-        </h2>
         {category.map((cat, i) => (
           <ProductCategory category={cat} key={i} />
         ))}
-        <h1 className="m-10">* (임시) 전체 상품 *</h1>
+        {/* <h1 className="m-10">* (임시) 전체 상품 *</h1> */}
         {/* product list */}
-        <div className="flex flex-wrap w-5/6 pl-4">
+        {/* <div className="flex flex-wrap w-5/6 pl-4">
           {data?.pages.flatMap((pageData, i) => {
             return pageData.data.map((product, j) => {
               if (i === data.pages.length - 1 && j === pageData.data.length - 1) {
@@ -60,7 +57,7 @@ const Home = () => {
               }
             });
           })}
-        </div>
+        </div> */}
       </div>
     </>
   );
