@@ -1,6 +1,8 @@
 import { Navigate, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { useAuth } from "@/AuthContext";
+import OrderDetail from "@/pages/OrderDetail";
+import OrderHistory from "@/pages/OrderHistory";
 
 const Home = lazy(() => import("@/pages/Home"));
 const MyPage = lazy(() => import("@/pages/MyPage"));
@@ -12,6 +14,7 @@ const ProductUpload = lazy(() => import("@/pages/ProductUpload"));
 const ProductUpdate = lazy(() => import("@/pages/ProductUpdate"));
 const Category = lazy(() => import("@/pages/Category"));
 const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
+const Order = lazy(() => import("@/pages/Order"));
 
 function SignInRoute() {
   const { user } = useAuth() || {};
@@ -47,6 +50,18 @@ function ProductUpdateRoute() {
   const { user } = useAuth() || {};
   return user?.isSeller ? <ProductUpdate /> : <Navigate replace to="/" />;
 }
+function OrderRoute() {
+  const { user } = useAuth() || {};
+  return user ? <Order /> : null;
+}
+function OrderHistoryRoute() {
+  const { user } = useAuth() || {};
+  return user ? <OrderHistory /> : null;
+}
+function OrderDetailRoute() {
+  const { user } = useAuth() || {};
+  return user ? <OrderDetail /> : null;
+}
 
 export default function AppRouter() {
   return (
@@ -62,6 +77,9 @@ export default function AppRouter() {
         <Route path="/products/:uid" element={<ProductsManagementRoute />} />
         <Route path="/productupload/:uid" element={<ProductUploadRoute />} />
         <Route path="/productupdate/:uid/:pid" element={<ProductUpdateRoute />} />
+        <Route path="/order/:oid" element={<OrderRoute />} />
+        <Route path="/orderhistory/:uid/:oid" element={<OrderHistoryRoute />} />
+        <Route path="/orderdetail/:oid" element={<OrderDetailRoute />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </Suspense>
