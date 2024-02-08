@@ -116,7 +116,7 @@ const Order = () => {
             localStorage.setItem("checkedCartItems", "");
 
             // 주문 완료 페이지로 이동
-            navigate(`/order-detail/${oid}`);
+            navigate(`/order-detail/${user?.userId}/${oid}`);
           } else {
             alert(`결제 실패`);
           }

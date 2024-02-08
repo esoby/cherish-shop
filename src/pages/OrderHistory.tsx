@@ -5,6 +5,7 @@ import { useDataLoad } from "@/hooks/useDataLoad";
 import { Order } from "@/interfaces/Order";
 import { collection, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const OrderHistory = () => {
   const { fetchData } = useDataLoad();
@@ -26,12 +27,12 @@ const OrderHistory = () => {
       <NavBar />
       <div>
         {orderList?.map((order, idx) => (
-          <div key={idx}>
+          <Link to={`/orderdetail/${user?.userId}/${order.orderGroupId}`} key={idx}>
             <p>{order.createdAt.toString()}</p>
             <p>{order.buyerId}</p>
             <p>{order.productId}</p>
             <p>{order.productQuantity}</p>
-          </div>
+          </Link>
         ))}
       </div>
     </>

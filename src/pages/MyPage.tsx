@@ -25,7 +25,9 @@ const MyPage = () => {
             </p>
           </>
         ) : (
-          <p>👉🏻 구매내역</p>
+          <p>
+            <Link to={`/orderhistory/${user?.userId}`}>👉🏻 구매 내역</Link>
+          </p>
         )}
         <button onClick={logout}>👉🏻 로그아웃</button>
       </div>
