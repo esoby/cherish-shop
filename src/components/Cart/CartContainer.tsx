@@ -1,6 +1,6 @@
 import { useAuth } from "@/AuthContext";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../ui/button";
 import { db } from "@/firebase";
 import { Product } from "@/interfaces/Product";
@@ -56,6 +56,9 @@ const CartContainer = () => {
   const { user } = useAuth() || {};
   const { pid } = useParams();
   const { fetchData: fetchCart } = useDataLoad<Cart>();
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
 
@@ -169,14 +172,23 @@ const CartContainer = () => {
     },
   });
 
+  // 체크박스 체크 여부 관리
   const handleCheckChange = (idx: number): void => {
     setCheckedItems((prev) => {
       const newItems = [...prev];
       newItems[idx] = !newItems[idx];
       return newItems;
     });
+    setErrorMsg("");
   };
 
+  // 체크된 항목 로컬 스토리지에 저장
+  useEffect(() => {
+    const checkedItemlst = productsInCart.filter((_, index) => checkedItems[index]);
+    localStorage.setItem("checkedCartItems", JSON.stringify(checkedItemlst));
+  }, [checkedItems]);
+
+  // 장바구니 선택 삭제
   const deleteCartItem = async (id: string) => {
     const docRef = doc(db, "cart", id);
     await deleteDoc(docRef);
@@ -189,12 +201,20 @@ const CartContainer = () => {
   });
 
   const deleteCheckedItems = async () => {
+    if (!checkedItems.filter((v) => v).length) setErrorMsg("선택한 상품이 없습니다.");
     const checkedItemlst = productsInCart.filter((_, index) => checkedItems[index]);
 
     for (const item of checkedItemlst) {
       await mutationDel.mutateAsync(item.cartId);
     }
   };
+
+  // 주문 버튼
+  function orderItems(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    event.preventDefault();
+    if (!checkedItems.filter((v) => v).length) setErrorMsg("선택한 상품이 없습니다.");
+    else navigate("/order/" + new Date().getTime());
+  }
 
   return (
     <SheetContent className="overflow-scroll animate-slide-in-from-right">
@@ -215,6 +235,7 @@ const CartContainer = () => {
           {productsInCart.map((val, idx) =>
             val.cartQuantity && quantities ? (
               <TableRow key={idx}>
+                {/* <TableCell className="font-medium">{val.productImage}</TableCell> */}
                 <TableCell className="font-medium">{val.productName}</TableCell>
                 <TableCell className="flex gap-1">
                   <Input
@@ -261,6 +282,9 @@ const CartContainer = () => {
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-right py-4">
         Total : {productsInCart.reduce((a, c) => a + c.productPrice * c.cartQuantity, 0)}원
       </h4>
+      <h4 className="scroll-m-20 text-sm font-semibold tracking-tight text-center pb-5 text-red-400">
+        {errorMsg}
+      </h4>
       <SheetFooter className="flex items-center focus:outline-none">
         <Button
           variant="outline"
@@ -270,7 +294,7 @@ const CartContainer = () => {
         >
           선택 상품 삭제하기
         </Button>
-        <Button className="h-12 w-1/2 focus:outline-none" tabIndex={-1}>
+        <Button className="h-12 w-1/2 focus:outline-none" tabIndex={-1} onClick={orderItems}>
           선택 상품 주문하기
         </Button>
       </SheetFooter>
