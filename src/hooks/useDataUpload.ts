@@ -9,7 +9,7 @@ export const useDataUpload = () => {
       updatedAt: serverTimestamp(),
     };
     const collectionRef = collection(db, collectionName);
-    return addDoc(collectionRef, newData);
+    return await addDoc(collectionRef, newData);
   };
 
   return { uploadData };
