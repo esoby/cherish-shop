@@ -13,6 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 type ProductsInCart = {
   productId: string;
   cartId: string;
+  sellerId: string;
   productName: string;
   productImage: string[];
   productPrice: number;
@@ -95,20 +96,21 @@ const Order = () => {
               orderItems.map((item) => {
                 const newData = {
                   orderGroupId: oid,
-                  sellerId: "",
+                  sellerId: item.sellerId,
                   buyerId: user?.userId,
                   productId: item.productId,
                   productQuantity: item.cartQuantity,
+                  productPrice: item.productPrice,
                   Status: 0,
                 };
                 return uploadData("order", newData);
               })
             );
 
-            // 상품별 재고 관리
-            await Promise.all(
-              orderItems.map((item) => updateProductQuantity(item.productId, item.cartQuantity))
-            );
+            // 상품별 재고 변경
+            // await Promise.all(
+            //   orderItems.map((item) => updateProductQuantity(item.productId, item.cartQuantity))
+            // );
 
             // 장바구니 비우기
             await Promise.all(orderItems.map((item) => deleteCart(item.cartId)));
@@ -116,7 +118,7 @@ const Order = () => {
             localStorage.setItem("checkedCartItems", "");
 
             // 주문 완료 페이지로 이동
-            navigate(`/order-detail/${user?.userId}/${oid}`);
+            navigate(`/orderdetail/${user?.userId}/${oid}`);
           } else {
             alert(`결제 실패`);
           }
@@ -168,6 +170,7 @@ const Order = () => {
       {orderItems?.map((item, idx) => (
         <div key={idx}>
           <p>{item.productId}</p>
+          <p>{item.sellerId}</p>
           <p>{item.productName}</p>
           {/* <p>{item.productImage}</p> */}
           <p>{item.productPrice}</p>
