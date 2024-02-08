@@ -7,6 +7,7 @@ export interface Order {
   buyerId: string;
   productId: string;
   productQuantity: number;
+  productPrice: number;
   Status: number;
   createdAt: Timestamp;
   updatedAt: Timestamp;
