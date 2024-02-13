@@ -42,6 +42,8 @@ import { Cart } from "@/interfaces/Cart";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import * as yup from "yup";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "../ui/toaster";
 
 type ProductsInCart = {
   productId: string;
@@ -59,6 +61,7 @@ const CartContainer = () => {
   const { fetchData: fetchCart } = useDataLoad<Cart>();
   const [errorMsg, setErrorMsg] = useState("");
 
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
@@ -77,11 +80,17 @@ const CartContainer = () => {
 
   const [checkedItems, setCheckedItems] = useState(new Array(productsInCart.length).fill(false));
 
-  // 유저별 카트 데이터 뽑아오기
+  // 유저별 카트 데이터 불러오기
   const { data: cartData } = useQuery(["cartproduct", user, pid], () =>
-    fetchCart(query(collection(db, "cart"), where("userId", "==", user?.userId)), null)
+    fetchCart(
+      query(
+        collection(db, "cart"),
+        where("userId", "==", user?.userId),
+        orderBy("createdAt", "desc")
+      ),
+      null
+    )
   );
-
   const [quantities, setQuantities] = useState(cartData?.data.map(() => 1));
 
   const fetchAllData = async () => {
@@ -104,10 +113,10 @@ const CartContainer = () => {
               productName: data.productName,
               productImage: data.productImage,
               productPrice: data.productPrice,
-              cartQuantity: lst.productQuantity,
+              cartQuantity: data.productQuantity < 1 ? 0 : lst.productQuantity,
             };
             newProductsInCart.push(newData);
-            newQuantities.push(lst.productQuantity);
+            newQuantities.push(data.productQuantity < 1 ? 0 : lst.productQuantity);
           }
         }
       }
@@ -131,18 +140,31 @@ const CartContainer = () => {
   // field validation
   const numberSchema = yup.number().integer().min(1);
 
-  const onChange = (idx: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
+  // 수량 변경 input onChange
+  const onChange =
+    (pid: string, idx: number) => async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
 
-    const newValue = filterNumericInput(value);
-    if (numberSchema.isValidSync(parseInt(newValue))) {
-      if (quantities) {
-        const newQ = [...quantities];
-        newQ[idx] = parseInt(value);
-        setQuantities(newQ);
+      // 재고 체크
+      if (pid) {
+        const docRef = doc(db, "products", pid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data() as Product;
+
+          const newValue = filterNumericInput(value);
+          if (numberSchema.isValidSync(parseInt(newValue))) {
+            if (quantities) {
+              const newQ = [...quantities];
+              newQ[idx] =
+                parseInt(value) > data.productQuantity ? data.productQuantity : parseInt(value);
+              setQuantities(newQ);
+            }
+          }
+        }
       }
-    }
-  };
+    };
 
   // 수량 변경
   const updateCart = async ({
@@ -156,8 +178,6 @@ const CartContainer = () => {
   }) => {
     try {
       const newData = {
-        userId: user?.userId,
-        productId: productId,
         productQuantity: cartQuantity,
         updatedAt: serverTimestamp(),
       };
@@ -187,7 +207,9 @@ const CartContainer = () => {
 
   // 체크된 항목 로컬 스토리지에 저장
   useEffect(() => {
-    const checkedItemlst = productsInCart.filter((_, index) => checkedItems[index]);
+    const checkedItemlst = productsInCart
+      .filter((_, index) => checkedItems[index])
+      .filter((v) => v.cartQuantity > 0);
     localStorage.setItem("checkedCartItems", JSON.stringify(checkedItemlst));
   }, [checkedItems]);
 
@@ -213,12 +235,63 @@ const CartContainer = () => {
   };
 
   // 주문 버튼
-  function orderItems(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+  const orderItems = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ): Promise<void> => {
     event.preventDefault();
-    if (!checkedItems.filter((v) => v).length) setErrorMsg("선택한 상품이 없습니다.");
-    else navigate("/order/" + new Date().getTime());
-  }
 
+    // 체크한 상품이 없을 경우
+    if (!checkedItems.filter((v) => v).length) {
+      setErrorMsg("선택한 상품이 없습니다.");
+      return;
+    }
+
+    // 체크한 상품은 있지만 품절된 상품들만 존재할 경우
+    if (
+      !productsInCart.filter((v, idx) => checkedItems[idx]).filter((v) => v.cartQuantity > 0).length
+    ) {
+      setErrorMsg("주문 가능한 상품을 선택해 주세요.");
+      return;
+    }
+
+    // 상품 재고 체크
+    const promises = productsInCart.map(async (product, idx) => {
+      if (checkedItems[idx]) {
+        const docRef = doc(db, "products", product.productId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data() as Product;
+
+          if (product.cartQuantity > data.productQuantity) {
+            toast({
+              variant: "destructive",
+              title: `[${product.productName}] 상품의 재고가 부족합니다.`,
+              description: "장바구니 수량을 변경합니다.",
+            });
+            if (quantities) {
+              const newQ = [...quantities];
+              newQ[idx] = data.productQuantity;
+              setQuantities(newQ);
+
+              const newData = {
+                productQuantity: data.productQuantity,
+                updatedAt: serverTimestamp(),
+              };
+              const docRef = doc(db, "cart", product.cartId);
+              await updateDoc(docRef, newData);
+              throw new Error(product.productName);
+            }
+          }
+        }
+      }
+    });
+
+    try {
+      await Promise.all(promises);
+      navigate("/order/" + new Date().getTime());
+    } catch (error) {}
+  };
   return (
     <SheetContent className="overflow-scroll animate-slide-in-from-right">
       <SheetHeader>
@@ -236,7 +309,7 @@ const CartContainer = () => {
         </TableHeader>
         <TableBody>
           {productsInCart.map((val, idx) =>
-            val.cartQuantity && quantities ? (
+            quantities ? (
               <TableRow key={idx}>
                 {/* <TableCell className="font-medium">{val.productImage}</TableCell> */}
                 <TableCell className="font-medium">{val.productName}</TableCell>
@@ -246,7 +319,7 @@ const CartContainer = () => {
                     type="number"
                     id={`quantity${idx}`}
                     value={quantities[idx]}
-                    onChange={onChange(idx)}
+                    onChange={onChange(val.productId, idx)}
                     tabIndex={-1}
                   />
                   <Button
@@ -264,9 +337,13 @@ const CartContainer = () => {
                     변경
                   </Button>
                 </TableCell>
-                <TableCell className="text-right">
-                  {val.productPrice * val.cartQuantity}원
-                </TableCell>
+                {val.cartQuantity ? (
+                  <TableCell className="text-right">
+                    {val.productPrice * val.cartQuantity}원
+                  </TableCell>
+                ) : (
+                  <TableCell className="text-right text-red-500">품절된 상품입니다.</TableCell>
+                )}
                 <TableCell>
                   <Checkbox
                     id={`chk-${idx}`}
@@ -301,6 +378,8 @@ const CartContainer = () => {
           선택 상품 주문하기
         </Button>
       </SheetFooter>
+
+      <Toaster />
     </SheetContent>
   );
 };
