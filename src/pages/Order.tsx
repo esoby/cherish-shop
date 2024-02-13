@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { db } from "@/firebase";
 import { useDataUpload } from "@/hooks/useDataUpload";
+import { OrderStatus } from "@/interfaces/Order";
 import { Product } from "@/interfaces/Product";
 import { RequestPayParams, RequestPayResponse } from "@/types/portone";
 import { Label } from "@radix-ui/react-label";
@@ -13,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 type ProductsInCart = {
   productId: string;
   cartId: string;
+  sellerId: string;
   productName: string;
   productImage: string[];
   productPrice: number;
@@ -95,17 +97,18 @@ const Order = () => {
               orderItems.map((item) => {
                 const newData = {
                   orderGroupId: oid,
-                  sellerId: "",
+                  sellerId: item.sellerId,
                   buyerId: user?.userId,
                   productId: item.productId,
                   productQuantity: item.cartQuantity,
-                  Status: 0,
+                  productPrice: item.productPrice,
+                  status: OrderStatus.OrderCompleted,
                 };
                 return uploadData("order", newData);
               })
             );
 
-            // 상품별 재고 관리
+            // 상품별 재고 변경
             await Promise.all(
               orderItems.map((item) => updateProductQuantity(item.productId, item.cartQuantity))
             );
@@ -116,7 +119,7 @@ const Order = () => {
             localStorage.setItem("checkedCartItems", "");
 
             // 주문 완료 페이지로 이동
-            navigate(`/order-detail/${oid}`);
+            navigate(`/orderdetail/${user?.userId}/${oid}`);
           } else {
             alert(`결제 실패`);
           }
@@ -168,6 +171,7 @@ const Order = () => {
       {orderItems?.map((item, idx) => (
         <div key={idx}>
           <p>{item.productId}</p>
+          <p>{item.sellerId}</p>
           <p>{item.productName}</p>
           {/* <p>{item.productImage}</p> */}
           <p>{item.productPrice}</p>

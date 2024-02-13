@@ -79,7 +79,7 @@ export default function AppRouter() {
         <Route path="/productupdate/:uid/:pid" element={<ProductUpdateRoute />} />
         <Route path="/order/:oid" element={<OrderRoute />} />
         <Route path="/orderhistory/:uid" element={<OrderHistoryRoute />} />
-        <Route path="/orderdetail/:oid" element={<OrderDetailRoute />} />
+        <Route path="/orderdetail/:uid/:oid" element={<OrderDetailRoute />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </Suspense>

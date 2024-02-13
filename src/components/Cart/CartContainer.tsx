@@ -46,6 +46,7 @@ import * as yup from "yup";
 type ProductsInCart = {
   productId: string;
   cartId: string;
+  sellerId: string;
   productName: string;
   productImage: string[];
   productPrice: number;
@@ -65,6 +66,7 @@ const CartContainer = () => {
   const defaultPIC = {
     cartId: "0",
     productId: "default",
+    sellerId: "default",
     productName: "default",
     productImage: [],
     productPrice: 0,
@@ -98,6 +100,7 @@ const CartContainer = () => {
             const newData = {
               cartId: lst.id,
               productId: docSnap.id,
+              sellerId: data.sellerId,
               productName: data.productName,
               productImage: data.productImage,
               productPrice: data.productPrice,
