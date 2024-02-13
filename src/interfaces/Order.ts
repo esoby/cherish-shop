@@ -1,5 +1,12 @@
 import { Timestamp } from "firebase/firestore";
 
+export enum OrderStatus {
+  OrderCompleted = "주문 완료",
+  ReadyForDelivery = "배송 대기",
+  DeliveryStarted = "배송 시작",
+  Cancelled = "주문 취소",
+}
+
 export interface Order {
   id: string;
   orderGroupId: string;
@@ -8,7 +15,7 @@ export interface Order {
   productId: string;
   productQuantity: number;
   productPrice: number;
-  Status: number;
+  status: OrderStatus;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
