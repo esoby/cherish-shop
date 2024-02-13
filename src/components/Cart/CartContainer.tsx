@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { db } from "@/firebase";
 import { Product } from "@/interfaces/Product";
 import {
+  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -289,9 +290,57 @@ const CartContainer = () => {
 
     try {
       await Promise.all(promises);
-      navigate("/order/" + new Date().getTime());
+      const oid = new Date().getTime();
+      await saveItemsToTempInventory(String(oid)); // 임시 재고에 상품 저장
+      navigate("/order/" + oid);
     } catch (error) {}
   };
+
+  // 주문 시 상품 재고 변동
+  const updateProductQuantity = async (pid: string, num: number) => {
+    try {
+      const collectionRef = collection(db, "products");
+      const docRef = doc(collectionRef, pid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data() as Product;
+        await updateDoc(docRef, { productQuantity: data.productQuantity + num });
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  const saveItemsToTempInventory = async (oid: string) => {
+    // 체크된 상품만 임시 재고에 추가
+    const checkedProducts = productsInCart.filter((_, idx) => checkedItems[idx]);
+
+    // 상품 수량 변경
+    await Promise.all(
+      checkedProducts.map((item) => updateProductQuantity(item.productId, -1 * item.cartQuantity))
+    );
+
+    const promises = checkedProducts.map(async (product) => {
+      const tempInventoryRef = collection(db, "tempInventory");
+
+      // 임시 재고에 상품 정보 저장
+      await addDoc(tempInventoryRef, {
+        orderGroupId: oid,
+        productId: product.productId,
+        tempQuantity: product.cartQuantity, // 임시 재고 수량
+        timestamp: serverTimestamp(), // 현재 시간
+      });
+    });
+
+    try {
+      await Promise.all(promises);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <SheetContent className="overflow-scroll animate-slide-in-from-right">
       <SheetHeader>
@@ -378,7 +427,6 @@ const CartContainer = () => {
           선택 상품 주문하기
         </Button>
       </SheetFooter>
-
       <Toaster />
     </SheetContent>
   );
