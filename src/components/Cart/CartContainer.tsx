@@ -409,7 +409,12 @@ const CartContainer = () => {
         </TableBody>
       </Table>
       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-right py-4">
-        Total : {productsInCart.reduce((a, c) => a + c.productPrice * c.cartQuantity, 0)}원
+        Total :{" "}
+        {productsInCart.reduce(
+          (a, c, idx) => (checkedItems[idx] ? a + c.productPrice * c.cartQuantity : a + 0),
+          0
+        )}
+        원
       </h4>
       <h4 className="scroll-m-20 text-sm font-semibold tracking-tight text-center pb-5 text-red-400">
         {errorMsg}
