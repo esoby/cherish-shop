@@ -155,24 +155,36 @@ const ProductDetail = () => {
               {product?.productName}
             </h4>
             <p className="text-sm text-muted-foreground">{product?.productCategory}</p>
-            <p className="w-full mt-4 break-words">- {product?.productDescription}</p>
-            <blockquote className="mt-6 border-l-2 pl-6 italic">
-              {product?.productPrice}원
-            </blockquote>
+            <div className="border-2 my-4 p-2 w-full min-h-20 rounded-lg">
+              <p className="w-full break-words">{product?.productDescription}</p>
+            </div>
+            {product?.productQuantity && product?.productQuantity > 0 ? (
+              <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-right w-full">
+                {product?.productPrice}원
+              </h4>
+            ) : (
+              <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-right w-full text-red-500">
+                SOLD OUT
+              </h4>
+            )}
           </div>
           <Sheet>
-            <div className="flex gap-2">
-              <div onClick={addToCart}>
-                <SheetTrigger asChild>
-                  <Button className="w-44">
-                    {cartData?.data.length ? "장바구니 보기" : "장바구니 추가"}
-                  </Button>
-                </SheetTrigger>
+            {product?.productQuantity && product?.productQuantity > 0 ? (
+              <div className="flex gap-2">
+                <div onClick={addToCart}>
+                  <SheetTrigger asChild>
+                    <Button className="w-44">
+                      {cartData?.data.length ? "장바구니 보기" : "장바구니 추가"}
+                    </Button>
+                  </SheetTrigger>
+                </div>
+                <Button variant="outline" className="w-44">
+                  바로 구매하기
+                </Button>
               </div>
-              <Button variant="outline" className="w-44">
-                바로 구매하기
-              </Button>
-            </div>
+            ) : (
+              ""
+            )}
             <CartContainer />
           </Sheet>
         </div>
