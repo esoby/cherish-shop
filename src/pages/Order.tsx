@@ -1,5 +1,14 @@
 import { useAuth } from "@/AuthContext";
+import NavBar from "@/components/Common/NavBar";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { db } from "@/firebase";
 import { useDataUpload } from "@/hooks/useDataUpload";
@@ -209,36 +218,74 @@ const Order = () => {
   };
 
   return (
-    <div>
-      <h2>상품 목록</h2>
-      {orderItems?.map((item, idx) => (
-        <div key={idx}>
-          <p>{item.productId}</p>
-          <p>{item.sellerId}</p>
-          <p>{item.productName}</p>
-          {/* <p>{item.productImage}</p> */}
-          <p>{item.productPrice}</p>
-          <p>{item.cartQuantity}</p>
+    <>
+      <div className="w-full flex flex-col items-center p-20 gap-5">
+        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+          Order
+        </h2>
+        <div className="w-2/3 flex flex-col gap-4">
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">상품 목록</h4>
+          {orderItems?.map((item, idx) => (
+            <Card key={idx} className="flex items-center p-3 pl-4">
+              <img src={item.productImage[0]} className="w-20 h-20 object-cover" />
+              <div className="ml-4">
+                <CardTitle className="text-lg m-0">{item.productName}</CardTitle>
+                <CardDescription className="m-0 ">{item.sellerId}</CardDescription>
+                <CardDescription className="text-gray-700">
+                  가격 : {item.productPrice}
+                </CardDescription>
+                <CardDescription className="text-gray-700">
+                  수량 : {item.cartQuantity}
+                </CardDescription>
+              </div>
+            </Card>
+          ))}
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight mt-10">
+            주문자 정보 입력
+          </h4>
+          <form className="flex flex-col gap-2">
+            <Label>이름</Label>
+            <Input type="text" id="name" value={inputValues?.name} onChange={onChange}></Input>
+            <Label>전화번호</Label>
+            <Input type="tel" id="tel" value={inputValues?.tel} onChange={onChange}></Input>
+            <Label>이메일</Label>
+            <Input type="email" id="email" value={inputValues?.email} onChange={onChange}></Input>
+            <Label>주소</Label>
+            <Input
+              type="address"
+              id="address"
+              value={inputValues?.address}
+              onChange={onChange}
+            ></Input>
+            <Label>우편번호</Label>
+            <Input
+              type="text"
+              id="zipcode"
+              value={inputValues?.zipcode}
+              onChange={onChange}
+            ></Input>
+          </form>
+          <h4 className="scroll-m-20 text-sm font-semibold tracking-tight text-center p-2 text-red-400">
+            {errorMsg}
+          </h4>
+          <div className="w-full flex gap-3">
+            <Button onClick={orderPayment} className="flex-grow">
+              결제하기
+            </Button>
+            <Button
+              variant="outline"
+              onClick={async () => {
+                if (oid) await restoreTempInventory(oid);
+                navigate(-1);
+              }}
+              className="flex-grow"
+            >
+              취소하기
+            </Button>
+          </div>
         </div>
-      ))}
-      <h2>정보 입력</h2>
-      <form>
-        <Label>이름</Label>
-        <Input type="text" id="name" value={inputValues?.name} onChange={onChange}></Input>
-        <Label>전화번호</Label>
-        <Input type="tel" id="tel" value={inputValues?.tel} onChange={onChange}></Input>
-        <Label>이메일</Label>
-        <Input type="email" id="email" value={inputValues?.email} onChange={onChange}></Input>
-        <Label>주소</Label>
-        <Input type="address" id="address" value={inputValues?.address} onChange={onChange}></Input>
-        <Label>우편번호</Label>
-        <Input type="text" id="zipcode" value={inputValues?.zipcode} onChange={onChange}></Input>
-      </form>
-      <h4 className="scroll-m-20 text-sm font-semibold tracking-tight text-center p-5 text-red-400">
-        {errorMsg}
-      </h4>
-      <Button onClick={orderPayment}>결제하기</Button>
-    </div>
+      </div>
+    </>
   );
 };
 
