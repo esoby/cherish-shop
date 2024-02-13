@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { db } from "@/firebase";
 import { useDataUpload } from "@/hooks/useDataUpload";
+import { OrderStatus } from "@/interfaces/Order";
 import { Product } from "@/interfaces/Product";
 import { RequestPayParams, RequestPayResponse } from "@/types/portone";
 import { Label } from "@radix-ui/react-label";
@@ -101,16 +102,16 @@ const Order = () => {
                   productId: item.productId,
                   productQuantity: item.cartQuantity,
                   productPrice: item.productPrice,
-                  Status: 0,
+                  status: OrderStatus.OrderCompleted,
                 };
                 return uploadData("order", newData);
               })
             );
 
             // 상품별 재고 변경
-            // await Promise.all(
-            //   orderItems.map((item) => updateProductQuantity(item.productId, item.cartQuantity))
-            // );
+            await Promise.all(
+              orderItems.map((item) => updateProductQuantity(item.productId, item.cartQuantity))
+            );
 
             // 장바구니 비우기
             await Promise.all(orderItems.map((item) => deleteCart(item.cartId)));
