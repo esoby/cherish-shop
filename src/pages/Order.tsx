@@ -5,11 +5,13 @@ import { db } from "@/firebase";
 import { useDataUpload } from "@/hooks/useDataUpload";
 import { OrderStatus } from "@/interfaces/Order";
 import { Product } from "@/interfaces/Product";
+import { TempInventory } from "@/interfaces/TempInventory";
 import { RequestPayParams, RequestPayResponse } from "@/types/portone";
 import { Label } from "@radix-ui/react-label";
-import { collection, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import * as yup from "yup";
 
 type ProductsInCart = {
   productId: string;
@@ -61,10 +63,24 @@ const Order = () => {
     };
   }, []);
 
+  // schema for validation
+  const requiredSchema = yup.object().shape({
+    email: yup.string().required("Email is required"),
+    tel: yup.string().required("Phone number is required"),
+    name: yup.string().required("name is required"),
+    address: yup.string().required("Address is required"),
+    zipcode: yup.string().required("Zipcode is required"),
+  });
+
   // 포트원 연동 및 결제
   const orderPayment = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (!requiredSchema.isValidSync({ ...inputValues })) {
+      setErrorMsg("모든 정보를 입력해주세요.");
+      return;
+    }
     const flag = confirm("결제하시겠습니까?");
     if (!flag) return;
+
     if (orderItems) {
       if (!window.IMP) return;
       /* 1. 가맹점 식별하기 */
@@ -108,11 +124,6 @@ const Order = () => {
               })
             );
 
-            // 상품별 재고 변경
-            await Promise.all(
-              orderItems.map((item) => updateProductQuantity(item.productId, item.cartQuantity))
-            );
-
             // 장바구니 비우기
             await Promise.all(orderItems.map((item) => deleteCart(item.cartId)));
 
@@ -121,10 +132,17 @@ const Order = () => {
             // 주문 완료 페이지로 이동
             navigate(`/orderdetail/${user?.userId}/${oid}`);
           } else {
-            alert(`결제 실패`);
+            // 결제 실패 시 재고 복구 & 임시 재고 삭제
+            alert("결제 실패 : 다시 시도해 주세요.");
+            if (oid) await restoreTempInventory(oid);
+            navigate("/");
           }
         } catch (error) {
           console.error(error);
+          // 결제 실패 시 재고 복구 & 임시 재고 삭제
+          alert("결제 실패 : 다시 시도해 주세요.");
+          if (oid) await restoreTempInventory(oid);
+          navigate("/");
         }
       };
       /* 4. 결제 창 호출하기 */
@@ -132,6 +150,7 @@ const Order = () => {
     }
   };
 
+  // 상품 재고 변동
   const updateProductQuantity = async (pid: string, num: number) => {
     try {
       const collectionRef = collection(db, "products");
@@ -140,7 +159,7 @@ const Order = () => {
 
       if (docSnap.exists()) {
         const data = docSnap.data() as Product;
-        await updateDoc(docRef, { productQuantity: data.productQuantity - num });
+        await updateDoc(docRef, { productQuantity: data.productQuantity + num });
       }
     } catch (error) {
       console.log(error);
@@ -148,6 +167,29 @@ const Order = () => {
     }
   };
 
+  // 재고 복구
+  const restoreTempInventory = async (oid: string) => {
+    try {
+      const collectionRef = collection(db, "tempInventory");
+      const querySnapshot = await getDocs(collectionRef);
+      const docs = querySnapshot.docs;
+
+      for (let doc of docs) {
+        const data = doc.data() as TempInventory;
+        if (data.orderGroupId === oid) {
+          // 본래 상품 재고에 다시 복구
+          await updateProductQuantity(data.productId, data.tempQuantity);
+          // 임시 재고 데이터 삭제
+          await deleteDoc(doc.ref);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  // 장바구니 삭제
   const deleteCart = async (cid: string) => {
     try {
       const collectionRef = collection(db, "cart");
@@ -159,6 +201,7 @@ const Order = () => {
     }
   };
 
+  // form input onChange
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, id: inputName } = event.target;
     setErrorMsg("");
@@ -191,7 +234,7 @@ const Order = () => {
         <Label>우편번호</Label>
         <Input type="text" id="zipcode" value={inputValues?.zipcode} onChange={onChange}></Input>
       </form>
-      <h4 className="scroll-m-20 text-sm font-semibold tracking-tight text-center pb-5 text-red-400">
+      <h4 className="scroll-m-20 text-sm font-semibold tracking-tight text-center p-5 text-red-400">
         {errorMsg}
       </h4>
       <Button onClick={orderPayment}>결제하기</Button>
