@@ -16,14 +16,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <Card
-      className="w-56 flex flex-col p-5 h-fit gap-2 mr-4"
-      onClick={() =>
+      className="w-56 flex flex-col p-5 h-fit gap-2 mr-4 cursor-pointer"
+      onClick={(e) => {
+        e.stopPropagation();
         navigate(
           pathname.split("/")[1] == "products"
             ? `/productupdate/${user?.userId}/${product.id}`
             : `/productdetail/${product.id}`
-        )
-      }
+        );
+      }}
     >
       {/* image carousel */}
       <div className="flex justify-center">
@@ -46,14 +47,20 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       </div>
       <CardTitle className="pt-3">{product.productName}</CardTitle>
       <CardDescription className="">{product.productCategory}</CardDescription>
-      <p className="flex justify-between pb-1 mb-1">
-        <small className="text-sm font-medium text-gray-500">{product.productPrice}원</small>
+      <div className="flex justify-between">
+        {product.productQuantity > 0 ? (
+          <small className="text-sm font-medium text-gray-600">{product.productPrice}원</small>
+        ) : (
+          <small className="text-sm font-medium text-gray-600">SOLD OUT</small>
+        )}
         {pathname.split("/")[1] == "products" && (
           <small className="text-sm font-medium text-red-500">{product.productQuantity}</small>
         )}
-      </p>
+      </div>
       {pathname.split("/")[1] == "products" && (
-        <p className="text-sm border-t pt-1 break-words">{product.productDescription}</p>
+        <p className="text-sm border-t pt-2 break-words text-gray-600">
+          {product.productDescription}
+        </p>
       )}
     </Card>
   );
