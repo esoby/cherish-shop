@@ -16,9 +16,11 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "@/components/Common/NavBar";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 
 type ProductsInOrder = {
   productName: string;
+  sellerId: string;
   productImage: string[];
   productPrice: number;
   orderQuantity: number;
@@ -26,6 +28,7 @@ type ProductsInOrder = {
 };
 
 const OrderDetail = () => {
+  const { user } = useAuth() || {};
   const { oid } = useParams();
   const navigate = useNavigate();
   const [canceled, setCanceled] = useState(false);
@@ -58,6 +61,7 @@ const OrderDetail = () => {
             productName: p.productName,
             productImage: p.productImage,
             productPrice: p.productPrice,
+            sellerId: v.sellerId,
             orderQuantity: v.productQuantity,
             orderStatus: v.status,
           } as ProductsInOrder;
@@ -116,20 +120,52 @@ const OrderDetail = () => {
   };
 
   return (
-    <div className="pt-20">
+    <>
       <NavBar />
-      <h2>주문 내역</h2>
-      {canceled ? <div>주문 취소됨!</div> : ""}
-      {orderItems?.map((item, idx) => (
-        <div key={idx}>
-          <p>{item.productName}</p>
-          {/* <p>{item.productImage}</p> */}
-          <p>{item.productPrice}</p>
-          <p>{item.orderQuantity}</p>
+      <div className="w-full flex flex-col items-center p-20 mt-16 gap-5">
+        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+          주문 상세 내역
+        </h2>
+        <div className="w-2/3 flex flex-col gap-4">
+          {orderItems?.map((item, idx) => (
+            <Card key={idx} className="flex items-center p-3 pl-4">
+              <img src={item.productImage[0]} className="w-20 h-20 object-cover" />
+              <div className="ml-4">
+                <CardTitle className="text-lg m-0">{item.productName}</CardTitle>
+                <CardDescription className="m-0">{item.sellerId}</CardDescription>
+                <CardDescription className="text-gray-700">
+                  가격 : {item.productPrice}
+                </CardDescription>
+                <CardDescription className="text-gray-700">
+                  주문 수량 : {item.orderQuantity}
+                </CardDescription>
+              </div>
+            </Card>
+          ))}
+
+          {canceled ? (
+            <div>
+              <h4 className="text-sm font-semibold tracking-tight p-2 text-red-400 text-right">
+                취소된 주문 내역입니다.
+              </h4>
+              <h5 className="scroll-m-20 text-lg font-semibold tracking-tight text-right line-through">
+                총 결제 금액 :{" "}
+                {orderItems?.reduce((a, c) => a + c.productPrice * c.orderQuantity, 0)}원
+              </h5>
+            </div>
+          ) : (
+            <h5 className="scroll-m-20 text-lg font-semibold tracking-tight text-right">
+              총 결제 금액 : {orderItems?.reduce((a, c) => a + c.productPrice * c.orderQuantity, 0)}
+              원
+            </h5>
+          )}
+          {canceled ? "" : <Button onClick={() => cancelOrder()}>주문 취소</Button>}
+          <Button variant="outline" onClick={() => navigate(-1)}>
+            목록 보기
+          </Button>
         </div>
-      ))}
-      {canceled ? "" : <Button onClick={() => cancelOrder()}>주문 취소</Button>}
-    </div>
+      </div>
+    </>
   );
 };
 
