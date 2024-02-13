@@ -22,6 +22,7 @@ type ProductsInOrder = {
   productImage: string[];
   productPrice: number;
   orderQuantity: number;
+  orderStatus: string;
 };
 
 const OrderDetail = () => {
@@ -45,6 +46,7 @@ const OrderDetail = () => {
       }
     };
 
+    // 주문 내역 불러오기
     const fetch = async () => {
       const q = query(collection(db, "order"), where("orderGroupId", "==", oid));
       const { data } = await fetchData(q, null);
@@ -57,12 +59,13 @@ const OrderDetail = () => {
             productImage: p.productImage,
             productPrice: p.productPrice,
             orderQuantity: v.productQuantity,
+            orderStatus: v.status,
           } as ProductsInOrder;
         }
       });
 
+      if (data) setCanceled(data[0].status === OrderStatus.Cancelled);
       const newArr = await Promise.all(promises);
-      console.log(newArr);
       setOrderItems(newArr.filter(Boolean) as ProductsInOrder[]);
 
       return data;
@@ -71,6 +74,7 @@ const OrderDetail = () => {
     fetch();
   }, []);
 
+  // 주문 취소
   const cancelOrder = async () => {
     try {
       if (oid) {
@@ -85,11 +89,29 @@ const OrderDetail = () => {
           };
           const docRef = doc(db, "order", d.id);
           await updateDoc(docRef, newData);
+          await updateProductQuantity(d.productId, d.productQuantity);
         });
         setCanceled(true);
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  // 상품 재고 변동
+  const updateProductQuantity = async (pid: string, num: number) => {
+    try {
+      const collectionRef = collection(db, "products");
+      const docRef = doc(collectionRef, pid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data() as Product;
+        await updateDoc(docRef, { productQuantity: data.productQuantity + num });
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
   };
 
@@ -106,7 +128,7 @@ const OrderDetail = () => {
           <p>{item.orderQuantity}</p>
         </div>
       ))}
-      <Button onClick={() => cancelOrder()}>주문 취소</Button>
+      {canceled ? "" : <Button onClick={() => cancelOrder()}>주문 취소</Button>}
     </div>
   );
 };
