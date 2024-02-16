@@ -1,8 +1,6 @@
 import { Navigate, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import { useAuth } from "@/AuthContext";
-import OrderDetail from "@/pages/OrderDetail";
-import OrderHistory from "@/pages/OrderHistory";
 
 const Home = lazy(() => import("@/pages/Home"));
 const MyPage = lazy(() => import("@/pages/MyPage"));
@@ -15,15 +13,17 @@ const ProductUpdate = lazy(() => import("@/pages/ProductUpdate"));
 const Category = lazy(() => import("@/pages/Category"));
 const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
 const Order = lazy(() => import("@/pages/Order"));
+const OrderDetail = lazy(() => import("@/pages/OrderDetail"));
+const OrderHistory = lazy(() => import("@/pages/OrderHistory"));
 
 function SignInRoute() {
   const { user } = useAuth() || {};
-  return user ? <Navigate replace to="/" /> : <SignIn />;
+  return !user ? <SignIn /> : <Navigate replace to="/" />;
 }
 
 function SignUpRoute() {
   const { user } = useAuth() || {};
-  return user ? <Navigate replace to="/" /> : <SignUp />;
+  return !user ? <SignUp /> : <Navigate replace to="/" />;
 }
 
 function MyPageRoute() {
@@ -52,15 +52,15 @@ function ProductUpdateRoute() {
 }
 function OrderRoute() {
   const { user } = useAuth() || {};
-  return user ? <Order /> : null;
+  return user && !user?.isSeller ? <Order /> : <Navigate replace to="/" />;
 }
 function OrderHistoryRoute() {
   const { user } = useAuth() || {};
-  return user ? <OrderHistory /> : null;
+  return user && !user?.isSeller ? <OrderHistory /> : <Navigate replace to="/" />;
 }
 function OrderDetailRoute() {
   const { user } = useAuth() || {};
-  return user ? <OrderDetail /> : null;
+  return user && !user?.isSeller ? <OrderDetail /> : <Navigate replace to="/" />;
 }
 
 export default function AppRouter() {
