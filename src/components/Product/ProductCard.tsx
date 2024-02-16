@@ -1,9 +1,12 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardDescription, CardTitle } from "../ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Product } from "@/interfaces/Product";
 import { useAuth } from "@/AuthContext";
+import { useState } from "react";
+import LazyImage from "../Common/LazyImage";
+import { MoreHorizontal } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -13,6 +16,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const { user } = useAuth() || {};
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Card
@@ -26,25 +31,50 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         );
       }}
     >
-      {/* image carousel */}
-      <div className="flex justify-center">
-        <Carousel
-          plugins={[
-            Autoplay({
-              delay: 2000,
-            }),
-          ]}
-          className="w-56 h-44"
-        >
-          <CarouselContent>
-            {product.productImage.map((img: string, idx: number) => (
-              <CarouselItem key={idx} className="flex items-center justify-center bg-gray-100 h-44">
-                <img src={img} className="w-full h-full object-cover"></img>{" "}
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+      <div
+        className="flex items-center justify-center bg-gray-100 h-44 w-44 relative"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {!isHovered && (
+          <LazyImage
+            className="w-full h-full object-cover"
+            src={product.productImage[0]}
+            alt={`${product.productName} main image`}
+          />
+        )}
+        {!isHovered && product.productImage.length > 1 && (
+          <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2">
+            <MoreHorizontal color="#dddddd" />
+          </div>
+        )}
+
+        {/* image carousel */}
+        {isHovered && (
+          <Carousel
+            opts={{ loop: true }}
+            plugins={[
+              Autoplay({
+                delay: 1500,
+              }),
+            ]}
+            className="w-56 h-44"
+          >
+            <CarouselContent>
+              {product.productImage.map((img: string, idx: number) => (
+                <CarouselItem key={idx} className="flex items-center justify-center h-44">
+                  <LazyImage
+                    className="w-full h-full object-cover"
+                    src={img}
+                    alt={`${product.productName} image ${idx}`}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        )}
       </div>
+
       <CardTitle className="pt-3">{product.productName}</CardTitle>
       <CardDescription className="">{product.productCategory}</CardDescription>
       <div className="flex justify-between">
