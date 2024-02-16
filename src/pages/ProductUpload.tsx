@@ -82,8 +82,8 @@ const ProductUpload = () => {
       const newProduct = {
         sellerId: user?.userId,
         ...inputValues,
-        productPrice: parseInt(String(inputValues.productPrice)),
-        productQuantity: parseInt(String(inputValues.productQuantity)),
+        productPrice: parseInt(inputValues.productPrice.toString()),
+        productQuantity: parseInt(inputValues.productQuantity.toString()),
         productImage: imageURLs,
       };
       await uploadData("products", newProduct);
