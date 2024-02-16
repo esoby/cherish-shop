@@ -4,8 +4,8 @@ import { db } from "@/firebase";
 import { useDataLoad } from "@/hooks/useDataLoad";
 import { collection, limit, orderBy, query, where } from "firebase/firestore";
 import { useQuery } from "react-query";
-import { ChevronRight } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { ChevronRight, MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
   category: string;
@@ -22,11 +22,24 @@ export const ProductCategory = ({ category }: ProductCardProps) => {
     limit(4)
   );
 
-  const { data } = useQuery(category, () => fetchData(q, null));
+  const { data, isLoading } = useQuery(category, () => fetchData(q, null));
+
+  if (isLoading) {
+    return (
+      <div
+        className="w-full h-[432px] border-b p-6 hover:bg-slate-100 overflow-scroll cursor-pointer relative"
+        onClick={() => navigate(`/category/${category}`)}
+      >
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <MoreHorizontal />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
-      className="w-full border-b p-6 hover:bg-slate-100 overflow-scroll cursor-pointer"
+      className="w-full h-[432px] border-b p-6 hover:bg-slate-100 overflow-scroll cursor-pointer"
       onClick={() => navigate(`/category/${category}`)}
     >
       <h4 className="text-xl font-semibold tracking-tight absolute flex gap-4 items-center">
