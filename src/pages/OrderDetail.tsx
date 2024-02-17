@@ -14,9 +14,10 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import NavBar from "@/components/Common/NavBar";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 
 type ProductsInOrder = {
   productName: string;
@@ -29,8 +30,8 @@ type ProductsInOrder = {
 
 const OrderDetail = () => {
   const { user } = useAuth() || {};
+  redirectIfNotAuthorized(user);
   const { oid } = useParams();
-  const navigate = useNavigate();
   const [canceled, setCanceled] = useState(false);
   const [orderItems, setOrderItems] = useState<ProductsInOrder[]>();
 
@@ -160,9 +161,6 @@ const OrderDetail = () => {
             </h5>
           )}
           {canceled ? "" : <Button onClick={() => cancelOrder()}>주문 취소</Button>}
-          <Button variant="outline" onClick={() => navigate(-1)}>
-            목록 보기
-          </Button>
         </div>
       </div>
     </>

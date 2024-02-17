@@ -13,13 +13,14 @@ import { Order, OrderStatus } from "@/interfaces/Order";
 
 import { query, collection, where, orderBy, doc, updateDoc } from "firebase/firestore";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 
 const SalesManagement = () => {
   const { user } = useAuth() || {};
+  if (user) redirectIfNotAuthorized(user);
   const { fetchData } = useDataLoad<Order>();
   const [saleStatusList, setSaleStatusList] = useState<string[]>([]);
   const queryClient = useQueryClient();

@@ -23,8 +23,10 @@ const NavBar = () => {
   const { fetchData: fetchCart } = useDataLoad<Cart>();
 
   // 현재 유저의 전체 장바구니 데이터 가져오기
-  const { data: cartDatas } = useQuery(["allcartproduct"], () =>
-    fetchCart(query(collection(db, "cart"), where("userId", "==", user?.userId)), null)
+  const { data: cartDatas } = useQuery(
+    ["allcartproduct"],
+    () => fetchCart(query(collection(db, "cart"), where("userId", "==", user?.userId)), null),
+    { enabled: !!user }
   );
 
   return (
@@ -57,7 +59,7 @@ const NavBar = () => {
                   <SheetTrigger asChild className={navigationMenuTriggerStyle()}>
                     <div className="cursor-pointer relative pr-7">
                       <ShoppingCart />
-                      <div className="w-4 h-4 bg-red-500 rounded-full text-[10px] flex justify-center items-center text-white absolute right-3.5 top-1">
+                      <div className="w-4 h-4 bg-red-500 rounded-full text-[10px] flex justify-center items-center text-white absolute right-4 top-1">
                         {cartDatas?.data.length || 0}
                       </div>
                     </div>

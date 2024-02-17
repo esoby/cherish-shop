@@ -1,14 +1,6 @@
 import { useAuth } from "@/AuthContext";
-import NavBar from "@/components/Common/NavBar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { db } from "@/firebase";
 import { useDataUpload } from "@/hooks/useDataUpload";
@@ -16,6 +8,7 @@ import { OrderStatus } from "@/interfaces/Order";
 import { Product } from "@/interfaces/Product";
 import { TempInventory } from "@/interfaces/TempInventory";
 import { RequestPayParams, RequestPayResponse } from "@/types/portone";
+import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import { Label } from "@radix-ui/react-label";
 import { collection, deleteDoc, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -42,6 +35,7 @@ type FormData = {
 
 const Order = () => {
   const { user } = useAuth() || {};
+  if (user) redirectIfNotAuthorized(user);
   const { oid } = useParams();
   const navigate = useNavigate();
   const [orderItems, setOrderItems] = useState<ProductsInCart[]>();
@@ -83,6 +77,7 @@ const Order = () => {
 
   // 포트원 연동 및 결제
   const orderPayment = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
     if (!requiredSchema.isValidSync({ ...inputValues })) {
       setErrorMsg("모든 정보를 입력해주세요.");
       return;
@@ -141,6 +136,7 @@ const Order = () => {
             // 주문 완료 페이지로 이동
             navigate(`/orderdetail/${user?.userId}/${oid}`);
           } else {
+            console.log(error_msg);
             // 결제 실패 시 재고 복구 & 임시 재고 삭제
             alert("결제 실패 : 다시 시도해 주세요.");
             if (oid) await restoreTempInventory(oid);

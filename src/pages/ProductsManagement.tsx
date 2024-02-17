@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/AuthContext";
 import { db } from "@/firebase";
 import { collection, limit, orderBy, query, where } from "firebase/firestore";
@@ -10,10 +10,11 @@ import { useInfiniteQuery } from "react-query";
 import { useDataLoad } from "@/hooks/useDataLoad";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import NavBar from "@/components/Common/NavBar";
+import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 
 const ProductsManagement = () => {
   const { user } = useAuth() || {};
-  const navigate = useNavigate();
+  if (user) redirectIfNotAuthorized(user);
 
   const { fetchData: fetchProduct } = useDataLoad<Product>();
 

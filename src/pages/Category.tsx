@@ -1,4 +1,3 @@
-import { useAuth } from "@/AuthContext";
 import { ProductCard } from "@/components/Product/ProductCard";
 import { db } from "@/firebase";
 import { useDataLoad } from "@/hooks/useDataLoad";
@@ -13,15 +12,13 @@ import {
 } from "@/components/ui/select";
 import { query, collection, orderBy, where, limit, Query } from "firebase/firestore";
 import { useInfiniteQuery } from "react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import NavBar from "@/components/Common/NavBar";
 
 const Category = () => {
-  const { user } = useAuth() || {};
   const { cid } = useParams();
   const { fetchData } = useDataLoad<Product>();
-  const navigate = useNavigate();
   const [orderFilter, setOrderFilter] = useState("createdAt/desc");
 
   // initial query
@@ -58,7 +55,7 @@ const Category = () => {
         <div className="mb-3">
           <Select value={orderFilter} onValueChange={(value) => setOrderFilter(value)}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="선택" />
+              <SelectValue id="sort" placeholder="선택" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="createdAt/desc">최신순</SelectItem>

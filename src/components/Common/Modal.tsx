@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
-import { ReactElement, createContext, useContext, useEffect, useState } from "react";
+import { ReactElement, createContext, useContext, useState } from "react";
 
-const ModalContext = createContext({ open: false, toggle: (chk: boolean) => {} });
+const ModalContext = createContext({ open: false, toggle: (_: boolean) => {} });
 
 // Provider return
 const Modal = (props: { children: any }) => {

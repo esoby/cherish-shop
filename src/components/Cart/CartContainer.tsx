@@ -18,21 +18,16 @@ import {
 } from "firebase/firestore";
 import { useDataLoad } from "@/hooks/useDataLoad";
 import {
-  Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -168,15 +163,7 @@ const CartContainer = () => {
     };
 
   // 수량 변경
-  const updateCart = async ({
-    cartId,
-    productId,
-    cartQuantity,
-  }: {
-    cartId: string;
-    productId: string;
-    cartQuantity: number;
-  }) => {
+  const updateCart = async ({ cartId, cartQuantity }: { cartId: string; cartQuantity: number }) => {
     try {
       const newData = {
         productQuantity: cartQuantity,
@@ -249,7 +236,7 @@ const CartContainer = () => {
 
     // 체크한 상품은 있지만 품절된 상품들만 존재할 경우
     if (
-      !productsInCart.filter((v, idx) => checkedItems[idx]).filter((v) => v.cartQuantity > 0).length
+      !productsInCart.filter((_, idx) => checkedItems[idx]).filter((v) => v.cartQuantity > 0).length
     ) {
       setErrorMsg("주문 가능한 상품을 선택해 주세요.");
       return;
@@ -292,7 +279,7 @@ const CartContainer = () => {
       await Promise.all(promises);
       const oid = new Date().getTime();
       await saveItemsToTempInventory(String(oid)); // 임시 재고에 상품 저장
-      navigate("/order/" + oid);
+      navigate(`/order/${user?.userId}/${oid}`);
     } catch (error) {}
   };
 
@@ -377,7 +364,6 @@ const CartContainer = () => {
                     onClick={() =>
                       updateCartMutation.mutate({
                         cartId: val.cartId,
-                        productId: val.productId,
                         cartQuantity: quantities[idx],
                       })
                     }

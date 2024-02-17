@@ -2,10 +2,11 @@ import { Product } from "@/interfaces/Product";
 import { ProductCard } from "./ProductCard";
 import { db } from "@/firebase";
 import { useDataLoad } from "@/hooks/useDataLoad";
-import { collection, limit, orderBy, query, where } from "firebase/firestore";
+import { DocumentData, Query, collection, limit, orderBy, query, where } from "firebase/firestore";
 import { useQuery } from "react-query";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 interface ProductCardProps {
   category: string;
@@ -14,15 +15,24 @@ interface ProductCardProps {
 export const ProductCategory = ({ category }: ProductCardProps) => {
   const { fetchData } = useDataLoad<Product>();
   const navigate = useNavigate();
+  const [q, setQ] = useState<Query<unknown, DocumentData>>();
 
-  const q = query(
-    collection(db, "products"),
-    orderBy("updatedAt", "desc"),
-    where("productCategory", "==", category),
-    limit(4)
-  );
+  useEffect(() => {
+    if (category) {
+      setQ(
+        query(
+          collection(db, "products"),
+          orderBy("updatedAt", "desc"),
+          where("productCategory", "==", category),
+          limit(4)
+        )
+      );
+    }
+  }, [category]);
 
-  const { data, isLoading } = useQuery(category, () => fetchData(q, null));
+  const { data, isLoading } = useQuery(category, () => (q ? fetchData(q, null) : undefined), {
+    enabled: !!q,
+  });
 
   if (isLoading) {
     return (
