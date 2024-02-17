@@ -72,12 +72,12 @@ export default function AppRouter() {
         <Route path="/productdetail/:pid" element={<ProductDetail />} />
         <Route path="/signin" element={<SignInRoute />} />
         <Route path="/signup" element={<SignUpRoute />} />
-        <Route path="/mypage/:id" element={<MyPageRoute />} />
-        <Route path="/sales/:id" element={<SalesManagementRoute />} />
+        <Route path="/mypage/:uid" element={<MyPageRoute />} />
+        <Route path="/sales/:uid" element={<SalesManagementRoute />} />
         <Route path="/products/:uid" element={<ProductsManagementRoute />} />
         <Route path="/productupload/:uid" element={<ProductUploadRoute />} />
         <Route path="/productupdate/:uid/:pid" element={<ProductUpdateRoute />} />
-        <Route path="/order/:oid" element={<OrderRoute />} />
+        <Route path="/order/:uid/:oid" element={<OrderRoute />} />
         <Route path="/orderhistory/:uid" element={<OrderHistoryRoute />} />
         <Route path="/orderdetail/:uid/:oid" element={<OrderDetailRoute />} />
         <Route path="*" element={<Home />} />
