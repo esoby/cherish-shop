@@ -193,6 +193,7 @@ const ProductDetail = () => {
 
   // 포트원 연동 및 결제
   const orderPayment = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
     if (!requiredSchema.isValidSync({ ...inputValues })) {
       setErrorMsg("모든 정보를 입력해주세요.");
       return;
@@ -224,7 +225,7 @@ const ProductDetail = () => {
       /* 3. 콜백 함수 정의하기 */
       const callback = async (response: RequestPayResponse) => {
         try {
-          const { success, error_msg } = response;
+          const { success } = response;
           if (success) {
             alert("결제가 완료되었습니다.");
 
@@ -342,7 +343,7 @@ const ProductDetail = () => {
                     delay: 2000,
                   }),
                 ]}
-                className="w-96 h-96 rounded-2xl overflow-hidden"
+                className="w-96 h-96 rounded-xl overflow-hidden"
               >
                 <CarouselContent>
                   {product?.productImage?.map((img: string, idx: number) => (
@@ -356,7 +357,7 @@ const ProductDetail = () => {
                 </CarouselContent>
               </Carousel>
             </div>
-            <div className="my-5 flex flex-col items-start w-80">
+            <div className="my-5 flex flex-col items-start w-96">
               <h4 className="scroll-m-20 border-b mb-2 text-2xl font-semibold tracking-tight first:mt-0">
                 {product?.productName}
               </h4>
@@ -375,7 +376,7 @@ const ProductDetail = () => {
               )}
             </div>
             <Sheet>
-              {product?.productQuantity && product?.productQuantity > 0 ? (
+              {!user?.isSeller && product?.productQuantity && product?.productQuantity > 0 ? (
                 <div className="flex gap-2">
                   <div onClick={addToCart}>
                     <SheetTrigger asChild>

@@ -4,7 +4,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import * as yup from "yup";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import { useDataUpload } from "@/hooks/useDataUpload";

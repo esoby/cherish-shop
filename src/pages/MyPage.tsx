@@ -1,12 +1,11 @@
+import { Link } from "react-router-dom";
 import { useAuth } from "@/AuthContext";
 import NavBar from "@/components/Common/NavBar";
-import { auth } from "@/firebase";
-import { signOut } from "firebase/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 
 const MyPage = () => {
-  const navigate = useNavigate();
   const { user, logout } = useAuth() || {};
+  if (user) redirectIfNotAuthorized(user);
 
   return (
     <>

@@ -40,7 +40,7 @@ const ProductImageInput = ({
     let fileRef = ref(storage, decodedFilePath);
     deleteObject(fileRef)
       .then(() => {})
-      .catch((error) => {});
+      .catch(() => {});
 
     setImageURLs((prev) => [...prev.slice(0, idx), ...prev.slice(idx + 1)]);
   };

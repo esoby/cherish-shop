@@ -59,7 +59,7 @@ const ProductInfoInput = ({ inputValues, setInputValues }: ProductFormProps) => 
           onValueChange={(value) => setInputValues((prev) => ({ ...prev, productCategory: value }))}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="선택" />
+            <SelectValue id="productCategory" placeholder="선택" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="Category1">Category1</SelectItem>

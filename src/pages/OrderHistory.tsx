@@ -5,6 +5,7 @@ import { db } from "@/firebase";
 import { useDataLoad } from "@/hooks/useDataLoad";
 import { Order, OrderStatus } from "@/interfaces/Order";
 import { Product } from "@/interfaces/Product";
+import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import { Timestamp, collection, doc, getDoc, orderBy, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -21,6 +22,7 @@ type History = {
 const OrderHistory = () => {
   const { fetchData } = useDataLoad<Order>();
   const { user } = useAuth() || {};
+  if (user) redirectIfNotAuthorized(user);
   const [history, setHistory] = useState<History[]>([]);
 
   useEffect(() => {

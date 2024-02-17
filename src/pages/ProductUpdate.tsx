@@ -8,7 +8,7 @@ import { Product } from "@/interfaces/Product";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import { serverTimestamp, doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as yup from "yup";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import ProductImageInput from "@/components/Product/ProductImageInput";
