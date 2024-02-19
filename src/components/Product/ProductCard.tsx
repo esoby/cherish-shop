@@ -84,7 +84,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <small className="text-sm font-medium text-gray-600">SOLD OUT</small>
         )}
         {pathname.split("/")[1] == "products" && (
-          <small className="text-sm font-medium text-red-500">{product.productQuantity}</small>
+          <small className="text-sm font-medium text-red-700">{product.productQuantity}</small>
         )}
       </div>
       {pathname.split("/")[1] == "products" && (
