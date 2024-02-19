@@ -11,6 +11,7 @@ import { useDataLoad } from "@/hooks/useDataLoad";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import NavBar from "@/components/Common/NavBar";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
+import MetaTag from "@/components/Common/SEOMetaTag";
 
 const ProductsManagement = () => {
   const { user } = useAuth() || {};
@@ -37,6 +38,10 @@ const ProductsManagement = () => {
 
   return (
     <>
+      <MetaTag
+        title="판매 상품 관리"
+        description="판매 상품을 관리하는 페이지입니다. 판매 중인 상품을 조회할 수 있습니다."
+      />
       <NavBar />
       <div className="w-full flex flex-col items-center p-20 mt-16 gap-5">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">

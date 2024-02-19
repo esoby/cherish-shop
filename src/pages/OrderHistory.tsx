@@ -1,5 +1,6 @@
 import { useAuth } from "@/AuthContext";
 import NavBar from "@/components/Common/NavBar";
+import MetaTag from "@/components/Common/SEOMetaTag";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { db } from "@/firebase";
 import { useDataLoad } from "@/hooks/useDataLoad";
@@ -72,6 +73,7 @@ const OrderHistory = () => {
 
   return (
     <>
+      <MetaTag title="주문 내역" description="주문 내역을 확인할 수 있는 페이지입니다." />
       <NavBar />
       <div className="w-full flex flex-col items-center p-20 mt-16 gap-5">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">

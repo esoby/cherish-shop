@@ -1,4 +1,5 @@
 import { useAuth } from "@/AuthContext";
+import MetaTag from "@/components/Common/SEOMetaTag";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -215,6 +216,7 @@ const Order = () => {
 
   return (
     <>
+      <MetaTag title="상품 주문서" description="상품 주문서를 작성하는 페이지입니다." />
       <div className="w-full flex flex-col items-center p-20 gap-5">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Order
