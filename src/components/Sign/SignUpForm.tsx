@@ -145,7 +145,7 @@ const SignUpForm = () => {
         </Label>
       </div>
       {/* submit */}
-      <Button type="submit" disabled={!watchEmail || !watchPassword}>
+      <Button name="회원가입버튼" type="submit" disabled={!watchEmail || !watchPassword}>
         회원가입
       </Button>
     </form>
