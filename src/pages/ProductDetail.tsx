@@ -38,6 +38,7 @@ import { OrderStatus } from "@/interfaces/Order";
 import { Cart } from "@/interfaces/Cart";
 import { Product } from "@/interfaces/Product";
 import { TempInventory } from "@/interfaces/TempInventory";
+import MetaTag from "@/components/Common/SEOMetaTag";
 
 type FormData = {
   name: string;
@@ -332,6 +333,11 @@ const ProductDetail = () => {
   };
   return (
     <>
+      <MetaTag
+        title="상세 페이지"
+        description="당신은 세상 제일 귀여운 친구를 만났습니다! 입양을 기다리고 있어요! 서둘러 주세요!"
+        url={`/productdetail/${pid}`}
+      />
       <NavBar />
       <Modal>
         <div className="relative w-full p-20 mt-16">

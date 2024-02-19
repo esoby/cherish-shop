@@ -17,6 +17,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
+import MetaTag from "@/components/Common/SEOMetaTag";
 
 const SalesManagement = () => {
   const { user } = useAuth() || {};
@@ -63,6 +64,10 @@ const SalesManagement = () => {
 
   return (
     <>
+      <MetaTag
+        title="판매 내역 관리"
+        description="판매 내역을 관리하는 페이지입니다. 주문 정보를 조회하고 상태를 수정할 수 있습니다."
+      />
       <NavBar />
       <div className="w-full flex flex-col items-center p-20 mt-16 gap-5">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">

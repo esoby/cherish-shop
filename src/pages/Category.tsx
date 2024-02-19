@@ -15,6 +15,7 @@ import { useInfiniteQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import NavBar from "@/components/Common/NavBar";
+import MetaTag from "@/components/Common/SEOMetaTag";
 
 const Category = () => {
   const { cid } = useParams();
@@ -47,13 +48,23 @@ const Category = () => {
 
   return (
     <>
+      <MetaTag
+        title={`카테고리별 상품 살펴보기`}
+        description="Cherish의 카테고리별 친구들을 모아모아 살펴볼 수 있는 페이지입니다. 취향에 맞는 세상 최고 귀여운 친구를 발견해보세요!"
+        url={`/category/${cid}`}
+      />
+      <MetaTag title="category" description="카테고리별 상품 목록" />
       <NavBar />
       <div className="w-full flex flex-col items-center p-20 mt-16">
-        <h2 className="scroll-m-20 border-b pb-10 text-3xl font-semibold tracking-tight first:mt-0">
+        <h2 className="scroll-m-20 border-b pb-2 mb-8 text-3xl font-semibold tracking-tight first:mt-0">
           {cid}
         </h2>
-        <div className="mb-3">
-          <Select value={orderFilter} onValueChange={(value) => setOrderFilter(value)}>
+        <div className="mb-10">
+          <Select
+            value={orderFilter}
+            onValueChange={(value) => setOrderFilter(value)}
+            name="정렬방식선택"
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue id="sort" placeholder="선택" />
             </SelectTrigger>
@@ -71,13 +82,13 @@ const Category = () => {
               if (i === data.pages.length - 1 && j === pageData.data.length - 1) {
                 // 마지막 요소 lastElementRef 추가
                 return (
-                  <div ref={lastElementRef} key={product.id}>
+                  <div ref={lastElementRef} key={product.id} className="mb-4">
                     <ProductCard product={product}></ProductCard>
                   </div>
                 );
               } else {
                 return (
-                  <div key={product.id}>
+                  <div key={product.id} className="mb-4">
                     <ProductCard product={product}></ProductCard>
                   </div>
                 );

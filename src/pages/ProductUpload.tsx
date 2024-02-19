@@ -11,6 +11,7 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import ProductInfoInput from "@/components/Product/ProductInfoInput";
 import ProductImageInput from "@/components/Product/ProductImageInput";
 import NavBar from "@/components/Common/NavBar";
+import MetaTag from "@/components/Common/SEOMetaTag";
 
 const ProductUpload = () => {
   const { user } = useAuth() || {};
@@ -104,6 +105,7 @@ const ProductUpload = () => {
 
   return (
     <>
+      <MetaTag title="판매 상품 등록" description="판매할 상품을 등록하는 페이지입니다." />
       <NavBar />
       <div className="w-full p-20 mt-16">
         <form className="flex flex-col w-full items-center gap-5">
