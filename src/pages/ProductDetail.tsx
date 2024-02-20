@@ -52,7 +52,6 @@ const ProductDetail = () => {
   const { user } = useAuth() || {};
   const { pid } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState<Product | null>(null);
   const { fetchData: fetchProducts } = useDataLoad<Product>();
   const { fetchData: fetchCart } = useDataLoad<Cart>();
   const { uploadData: addCart } = useDataUpload();
@@ -70,25 +69,23 @@ const ProductDetail = () => {
   const queryClient = useQueryClient();
 
   // 상품 문서 가져오기
-  const fetchProduct = async () => {
+  const fetchProduct = async (pid: string | undefined) => {
     if (pid) {
       const docRef = doc(db, "products", pid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        const data = docSnap.data() as Product;
-        setProduct({ ...data });
+        return docSnap.data() as Product;
       }
     }
   };
 
-  // 현재 페이지 상품 정보 불러오기
-  useEffect(() => {
-    fetchProduct();
-  }, [pid]);
+  const { data: product } = useQuery([`productDetail`, pid], () => fetchProduct(pid), {
+    enabled: !!pid,
+  });
 
   // 같은 카테고리 최근 상품 불러오기
   const { data: anotherProduct } = useQuery(
-    ["productDetail", product?.productCategory],
+    ["productDetailAnother", product?.productCategory],
     () =>
       fetchProducts(
         query(
@@ -109,15 +106,18 @@ const ProductDetail = () => {
   );
 
   // 현재 유저의 장바구니에 현재 상품 데이터 가져오기
-  const { data: cartData } = useQuery(["cartproduct"], () =>
-    fetchCart(
-      query(
-        collection(db, "cart"),
-        where("userId", "==", user?.userId),
-        where("productId", "==", pid)
+  const { data: cartData } = useQuery(
+    ["cartproduct", pid, user?.userId],
+    () =>
+      fetchCart(
+        query(
+          collection(db, "cart"),
+          where("userId", "==", user?.userId),
+          where("productId", "==", pid)
+        ),
+        null
       ),
-      null
-    )
+    { enabled: !!pid && !!user?.userId }
   );
 
   type UploadDataType = {
@@ -357,7 +357,11 @@ const ProductDetail = () => {
                       key={idx}
                       className="flex items-center justify-center bg-gray-100 h-96"
                     >
-                      <img src={img} className="h-full object-contain"></img>
+                      <img
+                        src={img}
+                        className="h-full object-contain"
+                        alt={`${product.productName} image ${idx}`}
+                      ></img>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
