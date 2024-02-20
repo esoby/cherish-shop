@@ -40,6 +40,8 @@ import { Product } from "@/interfaces/Product";
 import { TempInventory } from "@/interfaces/TempInventory";
 import MetaTag from "@/components/Common/SEOMetaTag";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 type FormData = {
   name: string;
   tel: string;
@@ -67,6 +69,8 @@ const ProductDetail = () => {
     zipcode: "",
   });
   const queryClient = useQueryClient();
+
+  const [showAlert, setShowAlert] = useState<string>("");
 
   // 상품 문서 가져오기
   const fetchProduct = async (pid: string | undefined) => {
@@ -145,8 +149,8 @@ const ProductDetail = () => {
       if (pid) {
         // 로그인 여부 확인
         if (!user) {
-          alert("로그인 후 이용할 수 있습니다.");
-          navigate("/signin");
+          setShowAlert("로그인 후 이용할 수 있습니다.");
+          return;
         }
 
         if (user) {
@@ -304,6 +308,11 @@ const ProductDetail = () => {
   async function startOrder(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void> {
     event.preventDefault();
 
+    if (!user) {
+      setShowAlert("로그인 후 이용할 수 있습니다.");
+      return;
+    }
+
     if (product) {
       const newOid = new Date().getTime().toString();
       await saveItemsToTempInventory(String(newOid)); // 임시 재고에 상품 저장
@@ -340,83 +349,103 @@ const ProductDetail = () => {
       />
       <NavBar />
       <Modal>
-        <div className="relative w-full p-20 mt-16">
-          <div className="flex flex-col items-center w-full">
-            <div className="flex justify-center">
-              <Carousel
-                plugins={[
-                  Autoplay({
-                    delay: 2000,
-                  }),
-                ]}
-                className="w-96 h-96 rounded-xl overflow-hidden"
-              >
-                <CarouselContent>
-                  {product?.productImage?.map((img: string, idx: number) => (
-                    <CarouselItem
-                      key={idx}
-                      className="flex items-center justify-center bg-gray-100 h-96"
-                    >
-                      <img
-                        src={img}
-                        className="h-full object-contain"
-                        alt={`${product.productName} image ${idx}`}
-                      ></img>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
-            </div>
-            <div className="my-5 flex flex-col items-start w-96">
-              <h4 className="scroll-m-20 border-b mb-2 text-2xl font-semibold tracking-tight first:mt-0">
-                {product?.productName}
-              </h4>
-              <p className="text-sm text-muted-foreground">{product?.productCategory}</p>
-              <div className="border-2 my-4 p-2 w-full min-h-20 rounded-lg">
-                <p className="w-full break-words">{product?.productDescription}</p>
-              </div>
-              {product?.productQuantity && product?.productQuantity > 0 ? (
-                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-right w-full">
-                  {product?.productPrice}원
+        <main className="w-full flex flex-col items-center mt-16">
+          {showAlert.length > 0 && (
+            <div
+              onClick={() => setShowAlert("")}
+              className="w-screen h-screen absolute top-0 left-0 z-50 bg-black opacity-30"
+            ></div>
+          )}
+          <div className="flex gap-5">
+            {/* 이미지 */}
+            <Carousel
+              plugins={[
+                Autoplay({
+                  delay: 2000,
+                }),
+              ]}
+              className="w-96 h-96 rounded-xl overflow-hidden"
+            >
+              <CarouselContent>
+                {product?.productImage?.map((img: string, idx: number) => (
+                  <CarouselItem
+                    key={idx}
+                    className="flex items-center justify-center bg-gray-100 h-96"
+                  >
+                    <img
+                      src={img}
+                      className="h-full object-contain"
+                      alt={`${product.productName} image ${idx}`}
+                    ></img>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+            <div className="w-96 flex flex-col justify-between p-4">
+              <div className="flex flex-col gap-2 w-96">
+                <h4 className="border-b pb-2 text-2xl font-semibold tracking-tight">
+                  {product?.productName}
                 </h4>
-              ) : (
-                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-right w-full text-red-500">
-                  SOLD OUT
-                </h4>
-              )}
-            </div>
-            <Sheet>
-              {!user?.isSeller && product?.productQuantity && product?.productQuantity > 0 ? (
-                <div className="flex gap-2">
-                  <div onClick={addToCart}>
-                    <SheetTrigger asChild>
-                      <Button className="w-44">
-                        {cartData?.data.length ? "장바구니 보기" : "장바구니 추가"}
-                      </Button>
-                    </SheetTrigger>
-                  </div>
-                  <Modal.Open>
-                    <Button variant="outline" className="w-44" onClick={startOrder}>
-                      바로 구매하기
-                    </Button>
-                  </Modal.Open>
+                <p className="text-sm text-muted-foreground">{product?.productCategory}</p>
+                <div className="border-2 my-4 p-2 w-full min-h-20 rounded-lg">
+                  <p className="w-full break-words">{product?.productDescription}</p>
                 </div>
-              ) : (
-                ""
-              )}
-              <CartContainer />
-            </Sheet>
+                {product?.productQuantity && product?.productQuantity > 0 ? (
+                  <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-right w-full">
+                    {product?.productPrice}원
+                  </h4>
+                ) : (
+                  <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-right w-full text-red-500">
+                    SOLD OUT
+                  </h4>
+                )}
+              </div>
+              <div className="w-fit">
+                {!user?.isSeller && product?.productQuantity && product?.productQuantity > 0 ? (
+                  <div className="flex justify-center gap-3">
+                    <Sheet>
+                      <div onClick={addToCart}>
+                        {user ? (
+                          <SheetTrigger asChild>
+                            <Button className="w-[185px]">
+                              {cartData?.data.length ? "장바구니 보기" : "장바구니 추가"}
+                            </Button>
+                          </SheetTrigger>
+                        ) : (
+                          <Button className="w-[185px]">장바구니 추가</Button>
+                        )}
+                      </div>
+                      <CartContainer />
+                    </Sheet>
+                    {user ? (
+                      <Modal.Open>
+                        <Button variant="outline" className="w-[185px]" onClick={startOrder}>
+                          바로 구매하기
+                        </Button>
+                      </Modal.Open>
+                    ) : (
+                      <Button variant="outline" className="w-[185px]" onClick={startOrder}>
+                        바로 구매하기
+                      </Button>
+                    )}
+                  </div>
+                ) : (
+                  <div></div>
+                )}
+              </div>
+            </div>
           </div>
           {/* 동일 카테고리 제품 추천 */}
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mt-32 ml-8">
-            {anotherProduct?.length ? "이런 상품은 어때요?" : ""}
+          <h3 className="mt-24 scroll-m-20 text-xl font-semibold tracking-tight w-full pl-6">
+            {anotherProduct?.length ? "다른 친구들 구경하기" : ""}
           </h3>
-          <div className="w-56 flex p-5 h-fit gap-2">
+          <div className="w-full overflow-scroll flex pt-5 gap-3 px-4 justify-between">
             {anotherProduct?.map((pro, i) => (
               <ProductCard product={pro} key={i}></ProductCard>
             ))}
           </div>
-        </div>
+        </main>
+        {/* 바로 구매 Modal */}
         <Modal.Container>
           <Modal.Header>
             <Modal.Close />
@@ -458,6 +487,22 @@ const ProductDetail = () => {
           </Modal.Footer>
         </Modal.Container>
       </Modal>
+      {showAlert.length > 0 && (
+        <Alert className="z-50 bg-slate-50 fixed left-1/4 w-1/2 -translate-x-1/2 top-16 animate-bounce">
+          <AlertTitle>Wait!</AlertTitle>
+          <AlertDescription>{showAlert}</AlertDescription>
+          <AlertDescription className="text-right">
+            <Button
+              onClick={() => {
+                setShowAlert("");
+                navigate("/signin");
+              }}
+            >
+              확인
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
     </>
   );
 };
