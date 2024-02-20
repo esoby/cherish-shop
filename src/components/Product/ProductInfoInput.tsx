@@ -62,11 +62,11 @@ const ProductInfoInput = ({ inputValues, setInputValues }: ProductFormProps) => 
             <SelectValue id="productCategory" placeholder="선택" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Category1">Category1</SelectItem>
-            <SelectItem value="Category2">Category2</SelectItem>
-            <SelectItem value="Category3">Category3</SelectItem>
-            <SelectItem value="Category4">Category4</SelectItem>
-            <SelectItem value="Category5">Category5</SelectItem>
+            <SelectItem value="DOLL">인형</SelectItem>
+            <SelectItem value="FIGURE">피규어</SelectItem>
+            <SelectItem value="TOY">장난감</SelectItem>
+            <SelectItem value="OBJECT">소품</SelectItem>
+            <SelectItem value="ETC">기타</SelectItem>
           </SelectContent>
         </Select>
       </div>
