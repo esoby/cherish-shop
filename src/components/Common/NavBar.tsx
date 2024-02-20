@@ -24,9 +24,9 @@ const NavBar = () => {
 
   // 현재 유저의 전체 장바구니 데이터 가져오기
   const { data: cartDatas } = useQuery(
-    ["allcartproduct"],
+    ["allcartproduct", user?.userId],
     () => fetchCart(query(collection(db, "cart"), where("userId", "==", user?.userId)), null),
-    { enabled: !!user }
+    { enabled: !!user?.userId }
   );
 
   return (
