@@ -11,23 +11,26 @@ import { db } from "@/firebase";
 import { useDataLoad } from "@/hooks/useDataLoad";
 import { Order, OrderStatus } from "@/interfaces/Order";
 
-import { query, collection, where, orderBy, doc, updateDoc } from "firebase/firestore";
+import { query, collection, where, orderBy, doc, updateDoc, getDoc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import MetaTag from "@/components/Common/SEOMetaTag";
+import MainContainer from "@/components/Common/MainContainer";
+import { Product } from "@/interfaces/Product";
+import { Link } from "react-router-dom";
 
 const SalesManagement = () => {
   const { user } = useAuth() || {};
   if (user) redirectIfNotAuthorized(user);
-  const { fetchData } = useDataLoad<Order>();
+  const { fetchData: fetchOrder } = useDataLoad<Order>();
   const [saleStatusList, setSaleStatusList] = useState<string[]>([]);
   const queryClient = useQueryClient();
 
   const { data: salesList } = useQuery(["orderlist"], () =>
-    fetchData(
+    fetchOrder(
       query(
         collection(db, "order"),
         where("sellerId", "==", user?.userId),
@@ -36,6 +39,29 @@ const SalesManagement = () => {
       null
     )
   );
+
+  const [productInOrderList, setProductInOrderList] = useState<Product[]>();
+
+  useEffect(() => {
+    if (salesList) {
+      const productPromises = Array.from(salesList.data).map(async (sale) => {
+        const docRef = doc(db, "products", sale.productId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) return docSnap;
+      });
+
+      Promise.all(productPromises).then((datas) => {
+        const newList = datas.map(
+          (v) =>
+            ({
+              id: v?.id,
+              ...v?.data(),
+            } as Product)
+        );
+        setProductInOrderList(newList);
+      });
+    }
+  }, [salesList]);
 
   // 주문 상태 변경
   const updateOrderStatus = async ({ id, val }: { id: string; val: string }) => {
@@ -69,10 +95,8 @@ const SalesManagement = () => {
         description="판매 내역을 관리하는 페이지입니다. 주문 정보를 조회하고 상태를 수정할 수 있습니다."
       />
       <NavBar />
-      <div className="w-full flex flex-col items-center p-20 mt-16 gap-5">
-        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          판매 관리
-        </h2>
+      <MainContainer>
+        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">판매 관리</h2>
         <div className="w-4/5 flex flex-col gap-4">
           {salesList &&
             salesList.data &&
@@ -84,13 +108,17 @@ const SalesManagement = () => {
                     <CardDescription className="text-gray-400">
                       {sale.createdAt.toDate().toString().split(" ").slice(0, 5).join(" ")}
                     </CardDescription>
-                    <CardDescription className="text-gray-700 font-semibold">
-                      {sale.productId}
-                    </CardDescription>
+                    {productInOrderList && (
+                      <CardDescription className="text-base text-gray-700 font-semibold hover:text-gray-400">
+                        <Link to={`/productdetail/${sale.productId}`}>
+                          [ {productInOrderList[idx].productName} ]
+                        </Link>
+                      </CardDescription>
+                    )}
                     <CardDescription className="text-gray-700 font-semibold">
                       수량 : {sale.productQuantity}
                     </CardDescription>
-                    <CardDescription className="text-gray-700 font-semibold text-base">
+                    <CardDescription className="text-gray-700 font-semibold">
                       결제 금액 : {sale.productPrice * sale.productQuantity}
                     </CardDescription>
                   </div>
@@ -117,6 +145,7 @@ const SalesManagement = () => {
                       </SelectContent>
                     </Select>
                     <Button
+                      variant="outline"
                       onClick={() => mutation.mutate({ id: sale.id, val: saleStatusList[idx] })}
                     >
                       변경
@@ -126,7 +155,7 @@ const SalesManagement = () => {
               </div>
             ))}
         </div>
-      </div>
+      </MainContainer>
     </>
   );
 };
