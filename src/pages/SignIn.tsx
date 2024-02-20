@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SignInForm from "@/components/Sign/SignInForm";
 import { handleGoogleAuthRedirectResult, signInWithGoogle } from "@/services/firebase/auth";
 import MetaTag from "@/components/Common/SEOMetaTag";
+import MainContainer from "@/components/Common/MainContainer";
 
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const SignInPage = () => {
         description="귀여운 것들로 가득 찬 Cherish 세상을 마음껏 누려보아요!"
         url="/signin"
       />
-      <div className="w-full flex flex-col items-center p-20 mt-16 ">
+      <MainContainer>
         <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">Sign in</h2>
         <div className="w-4/5 max-w-96 flex flex-col items-center gap-4">
           <SignInForm />
@@ -38,7 +39,7 @@ const SignInPage = () => {
             </span>
           </small>
         </div>
-      </div>
+      </MainContainer>
     </>
   );
 };

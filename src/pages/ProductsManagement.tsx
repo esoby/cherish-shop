@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/AuthContext";
 import { db } from "@/firebase";
 import { collection, limit, orderBy, query, where } from "firebase/firestore";
@@ -12,9 +12,11 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import NavBar from "@/components/Common/NavBar";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import MetaTag from "@/components/Common/SEOMetaTag";
+import MainContainer from "@/components/Common/MainContainer";
 
 const ProductsManagement = () => {
   const { user } = useAuth() || {};
+  const navigate = useNavigate();
   if (user) redirectIfNotAuthorized(user);
 
   const { fetchData: fetchProduct } = useDataLoad<Product>();
@@ -43,15 +45,21 @@ const ProductsManagement = () => {
         description="판매 상품을 관리하는 페이지입니다. 판매 중인 상품을 조회할 수 있습니다."
       />
       <NavBar />
-      <div className="w-full flex flex-col items-center p-20 mt-16 gap-5">
-        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          Product Management
-        </h2>
-        <Link to={`/productupload/${user?.userId}`}>
-          <Button>상품 추가</Button>
-        </Link>
+      <MainContainer>
+        <div className="w-full flex justify-between">
+          <div>
+            <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight">
+              판매 상품 관리
+            </h2>
+          </div>
+          <Link to={`/productupload/${user?.userId}`}>
+            <Button variant="outline" onClick={() => navigate(`/productupload/${user?.userId}`)}>
+              상품 추가
+            </Button>
+          </Link>
+        </div>
         {/* product list */}
-        <div className="flex flex-wrap w-5/6 pl-4">
+        <div className="grid grid-cols-4 gap-4 justify-center">
           {data?.pages.flatMap((pageData, i) => {
             return pageData.data.map((product, j) => {
               if (i === data.pages.length - 1 && j === pageData.data.length - 1) {
@@ -71,7 +79,7 @@ const ProductsManagement = () => {
             });
           })}
         </div>
-      </div>
+      </MainContainer>
     </>
   );
 };

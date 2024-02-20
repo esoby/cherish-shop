@@ -15,6 +15,7 @@ import ProductImageInput from "@/components/Product/ProductImageInput";
 import ProductInfoInput from "@/components/Product/ProductInfoInput";
 import NavBar from "@/components/Common/NavBar";
 import MetaTag from "@/components/Common/SEOMetaTag";
+import MainContainer from "@/components/Common/MainContainer";
 
 const ProductUpdate = () => {
   const { user } = useAuth() || {};
@@ -146,11 +147,9 @@ const ProductUpdate = () => {
     <>
       <MetaTag title="판매 상품 수정" description="판매 상품 정보를 수정하는 페이지입니다." />
       <NavBar />
-      <div className="w-full p-20 mt-16">
-        <form className="flex flex-col w-full items-center gap-5">
-          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-            상품 수정
-          </h2>
+      <MainContainer>
+        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">상품 수정</h2>
+        <form className="flex flex-col w-full items-center gap-6">
           {/* product image input */}
           <ProductImageInput
             imageURLs={imageURLs}
@@ -169,9 +168,9 @@ const ProductUpdate = () => {
               상품 삭제
             </Button>
           </div>
-          <Toaster />
         </form>
-      </div>
+        <Toaster />
+      </MainContainer>
     </>
   );
 };

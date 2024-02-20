@@ -12,6 +12,7 @@ import ProductInfoInput from "@/components/Product/ProductInfoInput";
 import ProductImageInput from "@/components/Product/ProductImageInput";
 import NavBar from "@/components/Common/NavBar";
 import MetaTag from "@/components/Common/SEOMetaTag";
+import MainContainer from "@/components/Common/MainContainer";
 
 const ProductUpload = () => {
   const { user } = useAuth() || {};
@@ -107,11 +108,9 @@ const ProductUpload = () => {
     <>
       <MetaTag title="판매 상품 등록" description="판매할 상품을 등록하는 페이지입니다." />
       <NavBar />
-      <div className="w-full p-20 mt-16">
-        <form className="flex flex-col w-full items-center gap-5">
-          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-            상품 등록
-          </h2>
+      <MainContainer>
+        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">상품 등록</h2>
+        <form className="flex flex-col w-full items-center gap-6">
           {/* product image input */}
           <ProductImageInput
             imageURLs={imageURLs}
@@ -127,7 +126,7 @@ const ProductUpload = () => {
           </Button>
           <Toaster />
         </form>
-      </div>
+      </MainContainer>
     </>
   );
 };
