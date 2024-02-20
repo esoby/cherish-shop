@@ -1,4 +1,5 @@
 import { useAuth } from "@/AuthContext";
+import MainContainer from "@/components/Common/MainContainer";
 import MetaTag from "@/components/Common/SEOMetaTag";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
@@ -217,10 +218,8 @@ const Order = () => {
   return (
     <>
       <MetaTag title="상품 주문서" description="상품 주문서를 작성하는 페이지입니다." />
-      <div className="w-full flex flex-col items-center p-20 gap-5">
-        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          Order
-        </h2>
+      <MainContainer>
+        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">Order</h2>
         <div className="w-2/3 flex flex-col gap-4">
           <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">상품 목록</h4>
           {orderItems?.map((item, idx) => (
@@ -282,7 +281,7 @@ const Order = () => {
             </Button>
           </div>
         </div>
-      </div>
+      </MainContainer>
     </>
   );
 };
