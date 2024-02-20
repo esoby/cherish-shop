@@ -72,7 +72,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-6 mt-10">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-6">
       {/* email */}
       <div className="flex flex-col gap-2">
         <Label htmlFor="email">Email</Label>

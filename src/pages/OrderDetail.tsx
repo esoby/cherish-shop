@@ -19,6 +19,7 @@ import NavBar from "@/components/Common/NavBar";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import MetaTag from "@/components/Common/SEOMetaTag";
+import MainContainer from "@/components/Common/MainContainer";
 
 type ProductsInOrder = {
   productName: string;
@@ -125,10 +126,8 @@ const OrderDetail = () => {
     <>
       <MetaTag title="주문 상세 내역" description="주문 상세 내역을 확인할 수 있는 페이지입니다." />
       <NavBar />
-      <div className="w-full flex flex-col items-center p-20 mt-16 gap-5">
-        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          주문 상세 내역
-        </h2>
+      <MainContainer>
+        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight"> 주문 상세 내역</h2>
         <div className="w-2/3 flex flex-col gap-4">
           {orderItems?.map((item, idx) => (
             <Card key={idx} className="flex items-center p-3 pl-4">
@@ -164,7 +163,7 @@ const OrderDetail = () => {
           )}
           {canceled ? "" : <Button onClick={() => cancelOrder()}>주문 취소</Button>}
         </div>
-      </div>
+      </MainContainer>
     </>
   );
 };

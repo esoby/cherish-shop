@@ -40,7 +40,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <Card
-      className="w-56 flex flex-col p-5 h-fit gap-2 mr-4 cursor-pointer"
+      className="w-60 flex flex-col p-5 h-fit gap-1 cursor-pointer"
       onClick={(e) => {
         e.stopPropagation();
         navigate(
@@ -52,7 +52,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       onMouseOver={prefetchProductData}
     >
       <div
-        className="flex items-center justify-center bg-gray-100 h-44 w-44 relative"
+        className="flex items-center justify-center bg-gray-100 h-[200px] w-[200px] relative"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -78,13 +78,12 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                 delay: 1500,
               }),
             ]}
-            className="w-56 h-44"
           >
             <CarouselContent>
               {product.productImage.map((img: string, idx: number) => (
-                <CarouselItem key={idx} className="flex items-center justify-center h-44">
+                <CarouselItem key={idx} className="flex items-center justify-center">
                   <LazyImage
-                    className="w-full h-full object-cover"
+                    className=" object-cover h-[200px] w-[200px]"
                     src={img}
                     alt={`${product.productName} image ${idx}`}
                   />
@@ -95,7 +94,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         )}
       </div>
 
-      <CardTitle className="pt-3">{product.productName}</CardTitle>
+      <CardTitle className="pt-2 text-xl">{product.productName}</CardTitle>
       <CardDescription className="">{product.productCategory}</CardDescription>
       <div className="flex justify-between">
         {product.productQuantity > 0 ? (

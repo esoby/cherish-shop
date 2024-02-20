@@ -385,6 +385,7 @@ const CartContainer = () => {
                     checked={checkedItems[idx]}
                     onCheckedChange={() => handleCheckChange(idx)}
                     tabIndex={-1}
+                    className="mr-1"
                   />
                 </TableCell>
               </TableRow>
