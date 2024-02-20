@@ -59,10 +59,10 @@ const ProductImageInput = ({
   return (
     <>
       <div className="w-4/5 h-fit relative">
-        <div className="flex gap-4 bg-slate-200 w-full h-72 overflow-scroll scrollbar-hide p-4 mt-5 border-none box-border">
+        <div className="flex gap-4 bg-slate-200 w-full h-80 scrollbar-hide p-6 mt-5 border-none box-border rounded-md overflow-y-hidden overflow-x-scroll">
           {imageURLs.length > 0 ? (
             imageURLs.map((img, idx) => (
-              <div className="flex-shrink-0 relative" key={idx}>
+              <div className="flex-shrink-0 relative h-full" key={idx}>
                 <img className="w-full h-full" src={img}></img>
                 <button onClick={(e) => deleteImage(e, img, idx)}>
                   <div
