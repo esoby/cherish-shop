@@ -15,7 +15,7 @@ const Home = () => {
       />
       <link rel="preload" href={mainImg} as="image" />
       <NavBar />
-      <div className="w-full h-96 overflow-hidden relative">
+      <div className="w-full h-[284px] overflow-hidden relative">
         <img
           src={mainImg}
           alt="main image"
