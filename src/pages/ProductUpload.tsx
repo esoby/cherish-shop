@@ -1,107 +1,35 @@
-import { useAuth } from "@/AuthContext";
-import { Button } from "@/components/ui/button";
+import NavBar from "@/components/Common/NavBar";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
-
-import { useEffect, useRef, useState } from "react";
-import * as yup from "yup";
+import { useAuth } from "@/AuthContext";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
-import { useDataUpload } from "@/hooks/useDataUpload";
-import { useImageUpload } from "@/hooks/useImageUpload";
-import ProductInfoInput from "@/components/Product/ProductInfoInput";
-import ProductImageInput from "@/components/Product/ProductImageInput";
-import NavBar from "@/components/Common/NavBar";
 import MetaTag from "@/components/Common/SEOMetaTag";
 import MainContainer from "@/components/Common/MainContainer";
+import ProductForm from "@/components/Sign/ProductForm";
+import { uploadStoreData } from "@/services/firebase/firestore";
+import { ProductFormFields } from "@/types/ProductFormFields";
+import { SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const ProductUpload = () => {
   const { user } = useAuth() || {};
   redirectIfNotAuthorized(user);
-
-  const initialInputVal = {
-    productName: "",
-    productCategory: "",
-    productPrice: 0,
-    productQuantity: 0,
-    productDescription: "",
-  };
-
+  const navigate = useNavigate();
   const { toast } = useToast();
-  // 사용자 입력 값
-  const [inputValues, setInputValues] = useState(initialInputVal);
-  // upload image and get storage url list
-  const { imageURLs, setImageURLs, uploadImages, resetImageURLs } = useImageUpload();
-  // input file ref
-  const imageFileRef = useRef<HTMLInputElement>(null);
-  // 상품 등록 버튼 disabled
-  const [btnDisabled, setBtnDisabled] = useState(true);
-  // 상품 등록 실패 메세지
-  const [errorMsg, setErrorMsg] = useState("");
-  // 데이터 업로드 함수 불러오기
-  const { uploadData } = useDataUpload();
 
-  // schema for validation
-  const requiredSchema = yup.object().shape({
-    productName: yup.string().required(),
-    productCategory: yup.string().required(),
-    productPrice: yup.string().required(),
-    productQuantity: yup.string().required(),
-    productDescription: yup.string().required(),
-  });
-
-  // schema for number field validation
-  const numberSchema = yup.number().integer().min(1);
-
-  const chkAllValid = () => {
-    return (
-      requiredSchema.isValidSync({ ...inputValues }) &&
-      numberSchema.isValidSync(inputValues.productPrice) &&
-      numberSchema.isValidSync(inputValues.productQuantity) &&
-      imageURLs.length > 0
-    );
-  };
-
-  // Enable / Disabled button
-  useEffect(() => {
-    if (chkAllValid()) {
-      setErrorMsg("");
-      setBtnDisabled(false);
-    } else {
-      setBtnDisabled(true);
-    }
-  }, [imageURLs, inputValues]);
-
-  // product upload
-  const uploadProduct = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-
-    if (!chkAllValid()) {
-      setErrorMsg("입력하지 않은 정보가 존재합니다.");
-      return;
-    }
-    try {
-      const newProduct = {
-        sellerId: user?.userId,
-        ...inputValues,
-        productPrice: parseInt(inputValues.productPrice.toString()),
-        productQuantity: parseInt(inputValues.productQuantity.toString()),
-        productImage: imageURLs,
-      };
-      await uploadData("products", newProduct);
-      toast({
-        description: "상품이 등록되었습니다!",
-      });
-
-      // input 초기화
-      resetImageURLs();
-      setInputValues(initialInputVal);
-      if (imageFileRef.current) imageFileRef.current.value = "";
-    } catch (error: unknown) {
-      toast({
-        variant: "destructive",
-        description: "상품 등록에 실패했습니다.",
-      });
-    }
+  // 상품 등록
+  const handleProductUpload: SubmitHandler<ProductFormFields> = async (data) => {
+    const newProduct = {
+      sellerId: user?.userId,
+      ...data,
+      productPrice: parseInt(data.productPrice.toString()),
+      productQuantity: parseInt(data.productQuantity.toString()),
+    };
+    await uploadStoreData("products", newProduct);
+    toast({
+      description: "상품이 등록되었습니다!",
+    });
+    setTimeout(() => navigate(`/products/${user?.userId}`), 1200);
   };
 
   return (
@@ -109,23 +37,11 @@ const ProductUpload = () => {
       <MetaTag title="판매 상품 등록" description="판매할 상품을 등록하는 페이지입니다." />
       <NavBar />
       <MainContainer>
-        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">상품 등록</h2>
-        <form className="flex flex-col w-full items-center gap-6">
-          {/* product image input */}
-          <ProductImageInput
-            imageURLs={imageURLs}
-            setImageURLs={setImageURLs}
-            uploadImages={uploadImages}
-            imageFileRef={imageFileRef}
-          />
-          {/* product info input list */}
-          <ProductInfoInput inputValues={inputValues} setInputValues={setInputValues} />
-          <small className="text-sm font-medium text-red-400">{errorMsg}</small>
-          <Button className="w-96" onClick={uploadProduct} disabled={btnDisabled}>
-            상품 등록
-          </Button>
-          <Toaster />
-        </form>
+        <h2 className="border-b pb-2 text-2xl font-semibold tracking-tight">상품 등록</h2>
+        <div className="w-2/3 min-w-72">
+          <ProductForm onSubmit={handleProductUpload} />
+        </div>
+        <Toaster />
       </MainContainer>
     </>
   );

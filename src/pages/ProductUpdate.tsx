@@ -1,145 +1,75 @@
 import { useAuth } from "@/AuthContext";
-import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 
-import { db } from "@/firebase";
-import { Product } from "@/interfaces/Product";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
-import { serverTimestamp, doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import * as yup from "yup";
-import { useImageUpload } from "@/hooks/useImageUpload";
-import ProductImageInput from "@/components/Product/ProductImageInput";
-import ProductInfoInput from "@/components/Product/ProductInfoInput";
 import NavBar from "@/components/Common/NavBar";
 import MetaTag from "@/components/Common/SEOMetaTag";
 import MainContainer from "@/components/Common/MainContainer";
+import { deleteStorageImage } from "@/services/firebase/storage";
+import { deleteStoreData, fetchStoreData, updateStoreData } from "@/services/firebase/firestore";
+import ProductForm from "@/components/Sign/ProductForm";
+import { SubmitHandler } from "react-hook-form";
+import { ProductFormFields } from "@/types/ProductFormFields";
+import { Product } from "@/interfaces/Product";
 
 const ProductUpdate = () => {
   const { user } = useAuth() || {};
   redirectIfNotAuthorized(user);
-
   const { pid } = useParams();
   const navigate = useNavigate();
-
-  const initialInputVal = {
-    productName: "",
-    productCategory: "",
-    productPrice: 0,
-    productQuantity: 0,
-    productDescription: "",
-  };
-
   const { toast } = useToast();
-  // 사용자 입력 값
-  const [inputValues, setInputValues] = useState(initialInputVal);
-  // upload image and get storage url list
-  const { imageURLs, setImageURLs, uploadImages } = useImageUpload();
 
-  // input file ref
-  const imageFileRef = useRef<HTMLInputElement>(null);
+  const [currValue, setCurrValue] = useState<ProductFormFields>();
 
-  // 상품 수정 버튼 disabled
-  const [btnDisabled, setBtnDisabled] = useState(true);
-  // 상품 수정 실패 메세지
-  const [errorMsg, setErrorMsg] = useState("");
-
-  // schema for validation
-  const requiredSchema = yup.object().shape({
-    productName: yup.string().required(),
-    productPrice: yup.string().required(),
-    productQuantity: yup.string().required(),
-    productDescription: yup.string().required(),
-    productCategory: yup.string().required(),
-  });
-
-  // schema for number field validation
-  const numberSchema = yup.number().integer().min(1);
-
-  const chkAllValid = () => {
-    return (
-      requiredSchema.isValidSync({ ...inputValues }) &&
-      numberSchema.isValidSync(inputValues.productPrice) &&
-      numberSchema.isValidSync(inputValues.productQuantity) &&
-      imageURLs.length > 0
-    );
-  };
-
-  // Enable / Disabled button
-  useEffect(() => {
-    if (chkAllValid()) {
-      setErrorMsg("");
-      setBtnDisabled(false);
-    } else {
-      setBtnDisabled(true);
-    }
-  }, [imageURLs, inputValues]);
-
-  // fetch current product data
-  useEffect(() => {
-    const fetchData = async () => {
-      if (pid) {
-        const docRef = doc(db, "products", pid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const data = docSnap.data() as Product;
-          setInputValues({
-            ...data,
-          });
-          setImageURLs(data.productImage);
-        }
-      }
-    };
-    fetchData();
-  }, [pid]);
-
-  // 상품 수정
-  const updateProduct = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-
-    if (!chkAllValid()) {
-      setErrorMsg("입력하지 않은 정보가 존재합니다.");
-      return;
-    }
-    try {
-      const newProduct = {
-        sellerId: user?.userId,
-        ...inputValues,
-        productPrice: parseInt(String(inputValues.productPrice)),
-        productQuantity: parseInt(String(inputValues.productQuantity)),
-        productImage: imageURLs,
-        updatedAt: serverTimestamp(),
-      };
-      if (pid) {
-        const docRef = doc(db, "products", pid);
-        await updateDoc(docRef, newProduct);
-        toast({
-          description: "상품 정보가 수정되었습니다!",
+  // 기존 데이터 불러오기
+  const fetchCurrValue = async () => {
+    if (pid) {
+      const data = await fetchStoreData<Product>("products", pid);
+      if (data) {
+        setCurrValue({
+          productName: data.productName,
+          productCategory: data.productCategory,
+          productPrice: data.productPrice,
+          productQuantity: data.productQuantity,
+          productDescription: data.productDescription,
+          productImage: data.productImage,
         });
       }
-    } catch (error: unknown) {
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrValue();
+  }, []);
+
+  // 상품 수정
+  const handleProductUpdate: SubmitHandler<ProductFormFields> = async (data) => {
+    const modifiedProduct = {
+      ...data,
+      productPrice: parseInt(String(data.productPrice)),
+      productQuantity: parseInt(String(data.productQuantity)),
+    };
+    if (pid) {
+      await updateStoreData("products", pid, modifiedProduct);
       toast({
-        variant: "destructive",
-        description: "상품 정보 수정에 실패했습니다.",
+        description: "상품 정보가 수정되었습니다!",
       });
     }
   };
 
   // 상품 삭제
-  const deleteProduct = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-
+  const handleProductDelete = async (urls: string[]) => {
     if (pid) {
-      const docRef = doc(db, "products", pid);
-      await deleteDoc(docRef);
+      await Promise.all(urls.map((url) => deleteStorageImage(url)));
+      await deleteStoreData("products", pid);
       toast({
         variant: "destructive",
         description: "상품 정보가 삭제되었습니다.",
       });
-      setTimeout(() => navigate(`/products/${user?.userId}`), 1500);
+      setTimeout(() => navigate(`/products/${user?.userId}`), 1000);
     }
   };
 
@@ -148,27 +78,16 @@ const ProductUpdate = () => {
       <MetaTag title="판매 상품 수정" description="판매 상품 정보를 수정하는 페이지입니다." />
       <NavBar />
       <MainContainer>
-        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">상품 수정</h2>
-        <form className="flex flex-col w-full items-center gap-6">
-          {/* product image input */}
-          <ProductImageInput
-            imageURLs={imageURLs}
-            setImageURLs={setImageURLs}
-            uploadImages={uploadImages}
-            imageFileRef={imageFileRef}
-          />
-          {/* product info input list */}
-          <ProductInfoInput inputValues={inputValues} setInputValues={setInputValues} />
-          <small className="text-sm font-medium text-red-400">{errorMsg}</small>
-          <div className="flex gap-2">
-            <Button className="w-48" onClick={updateProduct} disabled={btnDisabled}>
-              상품 수정
-            </Button>
-            <Button variant="destructive" className="w-48" onClick={deleteProduct}>
-              상품 삭제
-            </Button>
-          </div>
-        </form>
+        <h2 className="border-b pb-2 text-2xl font-semibold tracking-tight">상품 수정</h2>
+        <div className="w-2/3 min-w-72">
+          {currValue && (
+            <ProductForm
+              onSubmit={handleProductUpdate}
+              data={currValue}
+              onImageDelete={handleProductDelete}
+            />
+          )}
+        </div>
         <Toaster />
       </MainContainer>
     </>
