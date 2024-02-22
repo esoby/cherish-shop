@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: Props) => {
 
   if (loading)
     return (
-      <div className="animate-spin flex w-screen h-screen justify-center items-center">
+      <div className="animate-spin flex w-screen justify-center mt-60">
         <Loader2 size={40} color="#5c5c5c" />
       </div>
     );

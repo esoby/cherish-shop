@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/AuthContext";
 import { db } from "@/firebase";
 import { collection, limit, orderBy, query, where } from "firebase/firestore";
@@ -25,7 +25,7 @@ const ProductsManagement = () => {
     collection(db, "products"),
     where("sellerId", "==", user?.userId),
     orderBy("updatedAt", "desc"),
-    limit(4)
+    limit(8)
   );
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
@@ -48,22 +48,25 @@ const ProductsManagement = () => {
       <MainContainer>
         <div className="w-full flex justify-between">
           <div>
-            <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight">
+            <h2 className="scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight">
               판매 상품 관리
             </h2>
           </div>
-          <Link to={`/productupload/${user?.userId}`}>
-            <Button variant="outline" onClick={() => navigate(`/productupload/${user?.userId}`)}>
-              상품 추가
-            </Button>
-          </Link>
+          <Button variant="outline" onClick={() => navigate(`/productupload/${user?.userId}`)}>
+            새로운 상품 등록
+          </Button>
         </div>
+        {!data?.pages[0].data.length && (
+          <div className="mt-40">
+            <p className="text-slate-500 text-sm">판매할 상품을 추가해주세요!</p>
+          </div>
+        )}
         {/* product list */}
         <div className="grid grid-cols-4 gap-4 justify-center">
           {data?.pages.flatMap((pageData, i) => {
             return pageData.data.map((product, j) => {
               if (i === data.pages.length - 1 && j === pageData.data.length - 1) {
-                // 마지막 요소 lastElementRef 추가
+                // 마지막 요소
                 return (
                   <div ref={lastElementRef} key={product.id}>
                     <ProductCard product={product}></ProductCard>
