@@ -5,6 +5,7 @@ export enum OrderStatus {
   ReadyForDelivery = "배송 대기",
   DeliveryStarted = "배송 시작",
   Cancelled = "주문 취소",
+  SaleCompleted = "판매 완료",
 }
 
 export interface Order {
