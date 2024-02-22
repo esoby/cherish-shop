@@ -14,8 +14,13 @@ const MyPage = () => {
       <MetaTag title="마이페이지" description="개인 정보 및 거래 내역 관리 페이지입니다." />
       <NavBar />
       <MainContainer>
-        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">마이페이지</h2>
+        <h2 className="border-b pb-2 text-2xl font-semibold tracking-tight">
+          {user?.nickname}님의 마이페이지
+        </h2>
         <div className="w-[450px]">
+          <Link to={`/profile/${user?.userId}`}>
+            <p className="border-b p-4 text-lg font-semibold hover:bg-slate-100">개인 정보 수정</p>
+          </Link>
           {user?.isSeller ? (
             <>
               <Link to={`/products/${user?.userId}`}>

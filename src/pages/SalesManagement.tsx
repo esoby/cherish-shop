@@ -96,7 +96,7 @@ const SalesManagement = () => {
       />
       <NavBar />
       <MainContainer>
-        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">판매 관리</h2>
+        <h2 className="border-b pb-2 text-2xl font-semibold tracking-tight">판매 관리</h2>
         <div className="w-4/5 flex flex-col gap-4">
           {salesList &&
             salesList.data &&

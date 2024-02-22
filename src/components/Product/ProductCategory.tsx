@@ -22,9 +22,9 @@ export const ProductCategory = ({ category }: ProductCardProps) => {
       setQ(
         query(
           collection(db, "products"),
-          orderBy("updatedAt", "desc"),
+          orderBy("createdAt", "desc"),
           where("productCategory", "==", category),
-          limit(4)
+          limit(8)
         )
       );
     }
@@ -37,7 +37,7 @@ export const ProductCategory = ({ category }: ProductCardProps) => {
   if (isLoading) {
     return (
       <div
-        className="w-full h-[445px] border-b p-6 hover:bg-slate-100 overflow-scroll cursor-pointer relative"
+        className="w-full h-[460px] border-b p-6 hover:bg-slate-100 overflow-scroll cursor-pointer relative"
         onClick={() => navigate(`/category/${category}`)}
       >
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -49,7 +49,7 @@ export const ProductCategory = ({ category }: ProductCardProps) => {
 
   return (
     <section
-      className="w-full h-fit border-b hover:bg-slate-100 overflow-scroll cursor-pointer p-4 py-8 relative"
+      className="w-full h-[460px] border-b hover:bg-slate-100 overflow-scroll cursor-pointer p-4 py-8 relative"
       onClick={() => navigate(`/category/${category}`)}
     >
       <h4 className="text-xl font-semibold tracking-tight absolute flex gap-4 items-center left-6 top-6">
