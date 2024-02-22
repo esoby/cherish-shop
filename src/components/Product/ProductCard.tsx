@@ -7,9 +7,8 @@ import { useAuth } from "@/AuthContext";
 import { useState } from "react";
 import LazyImage from "../Common/LazyImage";
 import { MoreHorizontal } from "lucide-react";
-import { db } from "@/firebase";
-import { doc, getDoc } from "firebase/firestore";
 import { useQueryClient } from "react-query";
+import { fetchStoreData } from "@/services/firebase/firestore";
 
 interface ProductCardProps {
   product: Product;
@@ -24,18 +23,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   const queryClient = useQueryClient();
 
-  const fetchProduct = async (pid: string) => {
-    if (pid) {
-      const docRef = doc(db, "products", pid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return docSnap.data() as Product;
-      }
-    }
-  };
-
+  // 상품 상세 데이터 prefetching
   const prefetchProductData = () => {
-    queryClient.prefetchQuery(["productDetail", product.id], () => fetchProduct(product.id));
+    queryClient.prefetchQuery(["productDetail", product.id], () =>
+      fetchStoreData<Product>("products", product.id)
+    );
   };
 
   return (
