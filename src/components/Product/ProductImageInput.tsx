@@ -1,26 +1,23 @@
 import { ImagePlus, X } from "lucide-react";
 import { Input } from "../ui/input";
-import { ChangeEvent, Dispatch, RefObject, SetStateAction, useEffect, useState } from "react";
-import { deleteObject, getStorage, ref } from "firebase/storage";
+
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { deleteStorageImage } from "@/services/firebase/storage";
+import { useMutation } from "react-query";
 
 interface ProductImageInputProps {
   imageURLs: string[];
   setImageURLs: Dispatch<SetStateAction<string[]>>;
   uploadImages: (selectedFiles: File[]) => Promise<void>;
-  imageFileRef: RefObject<HTMLInputElement>;
 }
 
-const ProductImageInput = ({
-  imageURLs,
-  setImageURLs,
-  uploadImages,
-  imageFileRef,
-}: ProductImageInputProps) => {
-  // input file type list
+const ProductImageInput = ({ imageURLs, setImageURLs, uploadImages }: ProductImageInputProps) => {
+  // file input 값 저장
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const imageFileRef = useRef<HTMLInputElement>(null);
 
-  // input 내용 -> selectedFile
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+  // file input 값 변경 시 selectedFiles 저장
+  const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     if (event.target.files) {
       const newFiles = Array.from(event.target.files);
@@ -29,42 +26,41 @@ const ProductImageInput = ({
     }
   };
 
-  const deleteImage = (
+  const imageUploadMutation = useMutation(uploadImages, {
+    onSuccess: () => {
+      setSelectedFiles([]);
+    },
+  });
+
+  // selectedFiles 변경 시 이미지 업로드 후 비우기
+  useEffect(() => {
+    if (selectedFiles.length > 0) {
+      imageUploadMutation.mutate(selectedFiles);
+    }
+  }, [selectedFiles]);
+
+  // 이미지 개별 삭제 버튼 핸들러
+  const handleImageDelete = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     url: string,
     idx: number
   ) => {
     event.preventDefault();
-    const storage = getStorage();
-    let decodedFilePath = decodeURIComponent(url.split("/o/")[1].split("?")[0]);
-    let fileRef = ref(storage, decodedFilePath);
-    deleteObject(fileRef)
-      .then(() => {})
-      .catch(() => {});
 
     setImageURLs((prev) => [...prev.slice(0, idx), ...prev.slice(idx + 1)]);
+    await deleteStorageImage(url);
   };
-
-  // Upload image to storage as selectedFile change
-  useEffect(() => {
-    const upload = async () => {
-      await uploadImages(selectedFiles);
-    };
-    if (selectedFiles.length > 0) {
-      upload();
-      setSelectedFiles([]);
-    }
-  }, [selectedFiles]);
 
   return (
     <>
-      <div className="w-4/5 h-fit relative">
+      <div className="w-full h-fit relative">
         <div className="flex gap-4 bg-slate-200 w-full h-80 scrollbar-hide p-6 mt-5 border-none box-border rounded-md overflow-y-hidden overflow-x-scroll">
           {imageURLs.length > 0 ? (
             imageURLs.map((img, idx) => (
               <div className="flex-shrink-0 relative h-full" key={idx}>
                 <img className="w-full h-full" src={img}></img>
-                <button onClick={(e) => deleteImage(e, img, idx)}>
+                {/* 이미지별 삭제 버튼 */}
+                <button onClick={(e) => handleImageDelete(e, img, idx)}>
                   <div
                     className="w-4 h-4 p-0.5 bg-slate-700
                       rounded-full absolute -right-1 -top-1 flex justify-center items-center"
@@ -90,12 +86,12 @@ const ProductImageInput = ({
       </div>
       {/* 이미지 파일 input */}
       <Input
-        className="hidden"
         type="file"
-        multiple
         name="productImage"
+        multiple
+        className="hidden"
         ref={imageFileRef}
-        onChange={onChange}
+        onChange={handleFileInputChange}
       />
     </>
   );
