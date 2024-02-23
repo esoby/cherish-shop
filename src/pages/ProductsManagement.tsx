@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/AuthContext";
-import { db } from "@/firebase";
+import { useAuth } from "@/context/AuthContext";
+import { db } from "@/services/firebase/firebaseConfig";
 import { collection, limit, orderBy, query, where } from "firebase/firestore";
 import { Product } from "@/interfaces/Product";
 import { ProductCard } from "@/components/Product/ProductCard";

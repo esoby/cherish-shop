@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "@/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import NavBar from "@/components/Common/NavBar";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import MetaTag from "@/components/Common/SEOMetaTag";

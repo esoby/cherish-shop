@@ -1,5 +1,5 @@
 import { ProductCard } from "@/components/Product/ProductCard";
-import { db } from "@/firebase";
+import { db } from "@/services/firebase/firebaseConfig";
 import { useDataLoad } from "@/hooks/useDataLoad";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { Product } from "@/interfaces/Product";
@@ -23,8 +23,8 @@ const Category = () => {
   const { fetchData } = useDataLoad<Product>();
   const [orderFilter, setOrderFilter] = useState("createdAt/desc");
 
-  // initial query
-  let q = query(collection(db, "products"), where("productCategory", "==", cid), limit(4));
+  // 기본 쿼리
+  let q = query(collection(db, "products"), where("productCategory", "==", cid), limit(8));
 
   const [stateQ, setStateQ] = useState<Query>(query(q, orderBy("createdAt", "desc")));
 
@@ -38,6 +38,7 @@ const Category = () => {
 
   const lastElementRef = useIntersectionObserver(isFetchingNextPage, hasNextPage, fetchNextPage);
 
+  // 정렬 방식별 쿼리 세팅
   useEffect(() => {
     const [orderKey, orderOption] = orderFilter.split("/");
 
@@ -55,7 +56,7 @@ const Category = () => {
       />
       <NavBar />
       <MainContainer>
-        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">{cid}</h2>
+        <h2 className="border-b pb-2 text-2xl font-semibold tracking-tight">{cid}</h2>
         <Select
           value={orderFilter}
           onValueChange={(value) => setOrderFilter(value)}
@@ -75,7 +76,7 @@ const Category = () => {
           {data?.pages.flatMap((pageData, i) => {
             return pageData.data.map((product, j) => {
               if (i === data.pages.length - 1 && j === pageData.data.length - 1) {
-                // 마지막 요소 lastElementRef 추가
+                // 마지막 요소 lastElementRef
                 return (
                   <div ref={lastElementRef} key={product.id} className="mb-4">
                     <ProductCard product={product}></ProductCard>

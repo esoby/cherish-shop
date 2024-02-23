@@ -1,4 +1,4 @@
-import { auth, db } from "@/firebase";
+import { auth, db } from "@/services/firebase/firebaseConfig";
 import { SignUpFormFields } from "@/types/AuthFormFields";
 import { FirebaseError } from "firebase/app";
 import {

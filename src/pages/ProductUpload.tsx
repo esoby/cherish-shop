@@ -1,11 +1,11 @@
 import NavBar from "@/components/Common/NavBar";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
-import { useAuth } from "@/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import MetaTag from "@/components/Common/SEOMetaTag";
 import MainContainer from "@/components/Common/MainContainer";
-import ProductForm from "@/components/Sign/ProductForm";
+import ProductForm from "@/components/Product/ProductForm";
 import { uploadStoreData } from "@/services/firebase/firestore";
 import { ProductFormFields } from "@/types/ProductFormFields";
 import { SubmitHandler } from "react-hook-form";
