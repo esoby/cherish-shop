@@ -1,4 +1,4 @@
-import { useAuth } from "@/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -10,7 +10,7 @@ import MetaTag from "@/components/Common/SEOMetaTag";
 import MainContainer from "@/components/Common/MainContainer";
 import { deleteStorageImage } from "@/services/firebase/storage";
 import { deleteStoreData, fetchStoreData, updateStoreData } from "@/services/firebase/firestore";
-import ProductForm from "@/components/Sign/ProductForm";
+import ProductForm from "@/components/Product/ProductForm";
 import { SubmitHandler } from "react-hook-form";
 import { ProductFormFields } from "@/types/ProductFormFields";
 import { Product } from "@/interfaces/Product";

@@ -1,4 +1,4 @@
-import { useAuth } from "@/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -10,7 +10,7 @@ import {
 import { Link } from "react-router-dom";
 import CartContainer from "../Cart/CartContainer";
 import { Sheet, SheetTrigger } from "../ui/sheet";
-import { db } from "@/firebase";
+import { db } from "@/services/firebase/firebaseConfig";
 import { query, collection, where } from "firebase/firestore";
 import { useQuery } from "react-query";
 import { useDataLoad } from "@/hooks/useDataLoad";
@@ -57,7 +57,7 @@ const NavBar = () => {
                     <div className="cursor-pointer relative pr-7">
                       <ShoppingCart />
                       <div className="w-4 h-4 bg-pink-700 rounded-full text-[10px] flex justify-center items-center text-white absolute right-4 top-1">
-                        {cartDatas?.data.length || 0}
+                        {cartDatas?.data.length}
                       </div>
                     </div>
                   </SheetTrigger>

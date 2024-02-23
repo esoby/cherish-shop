@@ -1,5 +1,5 @@
-import { useAuth } from "@/AuthContext";
-import { storage } from "@/firebase";
+import { useAuth } from "@/context/AuthContext";
+import { storage } from "@/services/firebase/firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useState } from "react";
 import imageCompression from "browser-image-compression";
