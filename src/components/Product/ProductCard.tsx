@@ -3,7 +3,7 @@ import { Card, CardDescription, CardTitle } from "../ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Product } from "@/interfaces/Product";
-import { useAuth } from "@/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import LazyImage from "../Common/LazyImage";
 import { MoreHorizontal } from "lucide-react";
@@ -44,7 +44,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       onMouseOver={prefetchProductData}
     >
       <div
-        className="flex items-center justify-center bg-gray-100 h-[200px] w-[200px] relative"
+        className="flex items-center justify-center bg-gray-100 h-[200px] w-[200px] relative overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -67,7 +67,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             opts={{ loop: true }}
             plugins={[
               Autoplay({
-                delay: 1500,
+                delay: 1200,
               }),
             ]}
           >
@@ -75,7 +75,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               {product.productImage.map((img: string, idx: number) => (
                 <CarouselItem key={idx} className="flex items-center justify-center">
                   <LazyImage
-                    className=" object-cover h-[200px] w-[200px]"
+                    className="object-cover h-[220px] w-[220px]"
                     src={img}
                     alt={`${product.productName} image ${idx}`}
                   />

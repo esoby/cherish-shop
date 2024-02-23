@@ -1,11 +1,9 @@
 import { Timestamp } from "firebase/firestore";
 
-export interface Cart {
+export interface TempStock {
   id: string;
-  userId: string;
-  sellerId: string;
+  orderGroupId: string;
   productId: string;
-  cartQuantity: number;
+  tempQuantity: number;
   createdAt: Timestamp;
-  updatedAt: Timestamp;
 }
