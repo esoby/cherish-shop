@@ -1,6 +1,6 @@
 import { Navigate, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
-import { useAuth } from "@/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 const Home = lazy(() => import("@/pages/Home"));
 const MyPage = lazy(() => import("@/pages/MyPage"));
@@ -15,6 +15,7 @@ const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
 const Order = lazy(() => import("@/pages/Order"));
 const OrderDetail = lazy(() => import("@/pages/OrderDetail"));
 const OrderHistory = lazy(() => import("@/pages/OrderHistory"));
+const ProfileUpdate = lazy(() => import("@/pages/ProfileUpdate"));
 
 function SignInRoute() {
   const { user } = useAuth() || {};
@@ -29,6 +30,10 @@ function SignUpRoute() {
 function MyPageRoute() {
   const { user } = useAuth() || {};
   return user ? <MyPage /> : <Navigate replace to="/" />;
+}
+function ProfileUpdateRoute() {
+  const { user } = useAuth() || {};
+  return user ? <ProfileUpdate /> : <Navigate replace to="/" />;
 }
 
 function SalesManagementRoute() {
@@ -73,6 +78,7 @@ export default function AppRouter() {
         <Route path="/signin" element={<SignInRoute />} />
         <Route path="/signup" element={<SignUpRoute />} />
         <Route path="/mypage/:uid" element={<MyPageRoute />} />
+        <Route path="/profile/:uid" element={<ProfileUpdateRoute />} />
         <Route path="/sales/:uid" element={<SalesManagementRoute />} />
         <Route path="/products/:uid" element={<ProductsManagementRoute />} />
         <Route path="/productupload/:uid" element={<ProductUploadRoute />} />
