@@ -141,7 +141,7 @@ const SignUpForm = () => {
           {...register("isSeller")}
         />
         <Label htmlFor="isSeller" className="ml-2 text-sm font-medium leading-none">
-          판매를 위해 가입하시나요? 🤔
+          판매를 위해 가입하시나요?
         </Label>
       </div>
       {/* submit */}

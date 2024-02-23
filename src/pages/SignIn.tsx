@@ -30,9 +30,9 @@ const SignInPage = () => {
             Google 계정으로 로그인
           </Button>
           <small className="text-sm font-medium leading-none">
-            아직 계정이 없으신가요? 👉🏻{" "}
+            아직 계정이 없으신가요?{" "}
             <span
-              className="hover:text-blue-800 cursor-pointer"
+              className="hover:text-blue-800 cursor-pointer font-semibold"
               onClick={() => navigate("/signup")}
             >
               가입하기
