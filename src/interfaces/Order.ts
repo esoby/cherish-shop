@@ -20,3 +20,12 @@ export interface Order {
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+
+export interface OrderGroup {
+  orderGroupId: string;
+  mainImageSrc: string;
+  mainProductName: string;
+  orderCreatedAt: Timestamp;
+  orderStatus: OrderStatus;
+  orderLength: number;
+}

@@ -1,45 +1,33 @@
 import { Product } from "@/interfaces/Product";
 import { ProductCard } from "./ProductCard";
-import { db } from "@/firebase";
-import { useDataLoad } from "@/hooks/useDataLoad";
-import { DocumentData, Query, collection, limit, orderBy, query, where } from "firebase/firestore";
+import { limit, where } from "firebase/firestore";
 import { useQuery } from "react-query";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { fetchStoreDataByField } from "@/services/firebase/firestore";
 
 interface ProductCardProps {
   category: string;
 }
 
 export const ProductCategory = ({ category }: ProductCardProps) => {
-  const { fetchData } = useDataLoad<Product>();
   const navigate = useNavigate();
-  const [q, setQ] = useState<Query<unknown, DocumentData>>();
 
-  useEffect(() => {
-    if (category) {
-      setQ(
-        query(
-          collection(db, "products"),
-          orderBy("createdAt", "desc"),
-          where("productCategory", "==", category),
-          limit(8)
-        )
-      );
+  const { data, isLoading } = useQuery(
+    category,
+    () =>
+      fetchStoreDataByField("products", "productCategory", category, [
+        where("productCategory", "==", category),
+        limit(4),
+      ]),
+    {
+      enabled: !!category,
     }
-  }, [category]);
-
-  const { data, isLoading } = useQuery(category, () => (q ? fetchData(q, null) : undefined), {
-    enabled: !!q,
-  });
+  );
 
   if (isLoading) {
     return (
-      <div
-        className="w-full h-[460px] border-b p-6 hover:bg-slate-100 overflow-scroll cursor-pointer relative"
-        onClick={() => navigate(`/category/${category}`)}
-      >
+      <div className="w-full h-[460px] border-b p-6 relative">
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <MoreHorizontal />
         </div>
@@ -56,8 +44,8 @@ export const ProductCategory = ({ category }: ProductCardProps) => {
         {category} <ChevronRight color="#757575" />
       </h4>
       <div className="w-full flex p-5 h-fit gap-3 overflow-scroll mt-6">
-        {data?.data.map((product, i) => (
-          <ProductCard product={product} key={i}></ProductCard>
+        {data?.map((product, i) => (
+          <ProductCard product={product as Product} key={i}></ProductCard>
         ))}
       </div>
     </section>

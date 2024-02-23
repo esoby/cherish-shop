@@ -1,167 +1,97 @@
-import { useAuth } from "@/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { db } from "@/firebase";
-import { useDataLoad } from "@/hooks/useDataLoad";
 import { Order, OrderStatus } from "@/interfaces/Order";
 import { Product } from "@/interfaces/Product";
-import {
-  collection,
-  doc,
-  getDoc,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "@/components/Common/NavBar";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { redirectIfNotAuthorized } from "@/util/redirectIfNotAuthorized";
 import MetaTag from "@/components/Common/SEOMetaTag";
 import MainContainer from "@/components/Common/MainContainer";
-
-type ProductsInOrder = {
-  productName: string;
-  sellerId: string;
-  productImage: string[];
-  productPrice: number;
-  orderQuantity: number;
-  orderStatus: string;
-};
+import Loading from "@/components/Common/Loading";
+import {
+  fetchStoreData,
+  fetchStoreDataByField,
+  updateStoreData,
+} from "@/services/firebase/firestore";
+import { updateProductQuantity } from "@/services/order/handleStock";
+import OrderItem from "@/components/Order/OrderItem";
 
 const OrderDetail = () => {
   const { user } = useAuth() || {};
   redirectIfNotAuthorized(user);
   const { oid } = useParams();
-  const [canceled, setCanceled] = useState(false);
-  const [orderItems, setOrderItems] = useState<ProductsInOrder[]>();
+  const navigate = useNavigate();
+  const [cancelled, setCancelled] = useState(false);
+  const [orderItems, setOrderItems] = useState<Order[]>();
+  const [productItems, setProductItems] = useState<Product[]>();
 
-  const { fetchData } = useDataLoad<Order>();
+  // 주문 내역, 상품 정보 불러오기
+  const fetchContent = async () => {
+    const data = await fetchStoreDataByField<Order>("order", "orderGroupId", oid);
+    setOrderItems(data);
+
+    const promises = data.map(
+      async (order) => await fetchStoreData<Product>("products", order.productId)
+    );
+
+    if (data) setCancelled(data[0].status === OrderStatus.Cancelled);
+    const newArr = await Promise.all(promises);
+    setProductItems(newArr.filter((v): v is Product => v !== undefined));
+  };
 
   useEffect(() => {
-    const fetchProductData = async (pid: string) => {
-      if (pid) {
-        const docRef = doc(db, "products", pid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data() as Product;
-          return data;
-        }
-        return null;
-      }
-    };
-
-    // 주문 내역 불러오기
-    const fetch = async () => {
-      const q = query(collection(db, "order"), where("orderGroupId", "==", oid));
-      const { data } = await fetchData(q, null);
-
-      const promises = data.map(async (v) => {
-        const p = await fetchProductData(v.productId);
-        if (p) {
-          return {
-            productName: p.productName,
-            productImage: p.productImage,
-            productPrice: p.productPrice,
-            sellerId: v.sellerId,
-            orderQuantity: v.productQuantity,
-            orderStatus: v.status,
-          } as ProductsInOrder;
-        }
-      });
-
-      if (data) setCanceled(data[0].status === OrderStatus.Cancelled);
-      const newArr = await Promise.all(promises);
-      setOrderItems(newArr.filter(Boolean) as ProductsInOrder[]);
-
-      return data;
-    };
-
-    fetch();
+    fetchContent();
   }, []);
 
   // 주문 취소
   const cancelOrder = async () => {
-    try {
-      if (oid) {
-        const q = query(collection(db, "order"), where("orderGroupId", "==", oid));
-        const { data } = await fetchData(q, null);
+    if (oid) {
+      const orders = await fetchStoreDataByField<Order>("order", "orderGroupId", oid);
 
-        data.map(async (d) => {
-          const newData = {
-            ...d,
-            status: OrderStatus.Cancelled,
-            updatedAt: serverTimestamp(),
-          };
-          const docRef = doc(db, "order", d.id);
-          await updateDoc(docRef, newData);
-          await updateProductQuantity(d.productId, d.productQuantity);
+      orders.map(async (order) => {
+        await updateStoreData("order", order.id, {
+          status: OrderStatus.Cancelled,
+          updatedAt: serverTimestamp(),
         });
-        setCanceled(true);
-      }
-    } catch (error) {
-      console.log(error);
+        await updateProductQuantity(order.productId, order.productQuantity);
+      });
+      setCancelled(true);
     }
   };
 
-  // 상품 재고 변동
-  const updateProductQuantity = async (pid: string, num: number) => {
-    try {
-      const collectionRef = collection(db, "products");
-      const docRef = doc(collectionRef, pid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data() as Product;
-        await updateDoc(docRef, { productQuantity: data.productQuantity + num });
-      }
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
+  if (!orderItems || !productItems) return <Loading />;
 
   return (
     <>
       <MetaTag title="주문 상세 내역" description="주문 상세 내역을 확인할 수 있는 페이지입니다." />
       <NavBar />
       <MainContainer>
-        <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight"> 주문 상세 내역</h2>
+        <h2 className="border-b pb-2 text-2xl font-semibold tracking-tight"> 주문 상세 내역</h2>
         <div className="w-2/3 flex flex-col gap-4">
           {orderItems?.map((item, idx) => (
-            <Card key={idx} className="flex items-center p-3 pl-4">
-              <img src={item.productImage[0]} className="w-20 h-20 object-cover" />
-              <div className="ml-4">
-                <CardTitle className="text-lg m-0">{item.productName}</CardTitle>
-                <CardDescription className="m-0">{item.sellerId}</CardDescription>
-                <CardDescription className="text-gray-700">
-                  가격 : {item.productPrice}
-                </CardDescription>
-                <CardDescription className="text-gray-700">
-                  주문 수량 : {item.orderQuantity}
-                </CardDescription>
-              </div>
-            </Card>
+            <OrderItem key={idx} order={item} product={productItems[idx]} />
           ))}
-
-          {canceled ? (
-            <div>
-              <h4 className="text-sm font-semibold tracking-tight p-2 text-red-400 text-right">
+          <div>
+            {cancelled && (
+              <h4 className="text-sm font-semibold tracking-tight text-red-400 text-right">
                 취소된 주문 내역입니다.
               </h4>
-              <h5 className="scroll-m-20 text-lg font-semibold tracking-tight text-right line-through">
-                총 결제 금액 :{" "}
-                {orderItems?.reduce((a, c) => a + c.productPrice * c.orderQuantity, 0)}원
-              </h5>
-            </div>
-          ) : (
-            <h5 className="scroll-m-20 text-lg font-semibold tracking-tight text-right">
-              총 결제 금액 : {orderItems?.reduce((a, c) => a + c.productPrice * c.orderQuantity, 0)}
-              원
+            )}
+            <h5
+              className={`scroll-m-20 text-lg font-semibold tracking-tight text-right ${
+                cancelled ? "text-gray-400 line-through" : ""
+              }`}
+            >
+              총 결제 금액 :{" "}
+              {orderItems?.reduce((a, c) => a + c.productPrice * c.productQuantity, 0)}원
             </h5>
-          )}
-          {canceled ? "" : <Button onClick={() => cancelOrder()}>주문 취소</Button>}
+          </div>
+          {!cancelled && <Button onClick={() => cancelOrder()}>주문 취소</Button>}
+          <Button variant="outline" onClick={() => navigate(`/orderhistory/${user?.userId}`)}>
+            목록 보기
+          </Button>
         </div>
       </MainContainer>
     </>
