@@ -19,7 +19,10 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<SignInFormFields> = async (data) => {
     await signIn(data).then((result) => {
-      if (result) navigate(-1);
+      if (result) {
+        navigate(-1);
+        window.location.reload();
+      }
     });
   };
 
