@@ -33,7 +33,7 @@ const NavBar = () => {
 
   return (
     <NavigationMenu className="left-1/2 -translate-x-1/2 top-0 fixed">
-      <NavigationMenuList className="w-screen flex border-b p-4 pl-6 pr-6 bg-white max-w-[1080px]">
+      <NavigationMenuList className="w-screen flex border-b p-3 pl-6 pr-6 pt-5 bg-white max-w-[1080px]">
         <NavigationMenuItem className="flex-grow">
           <Link to={"/"}>
             <img src={logoImg} alt="cherish logo image" className="w-36 -translate-y-2" />
