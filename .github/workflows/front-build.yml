@@ -25,7 +25,6 @@ jobs:
           path: node_modules
           key: npm-packages-${{ hashFiles('**/package-lock.json') }}
 
-      # 노드 모듈이 바뀌면 디펜던시 인스톨
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
@@ -44,8 +43,7 @@ jobs:
         env:
           BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
         run: |
-          aws s3 sync \
-            ./build s3://$BUCKET_NAME
+          aws s3 sync ./dist s3://$BUCKET_NAME
 
       - name: CloudFront Invalidation
         env:
