@@ -9,13 +9,13 @@ import { Product } from "@/interfaces/Product";
 
 export const ProductCarousel = ({ product }: { product: Product }) => {
   return (
-    <Carousel className="w-96">
+    <Carousel className="w-96 h-96">
       <CarouselContent>
         {product?.productImage?.map((img: string, idx: number) => (
-          <CarouselItem key={idx} className="flex items-center justify-centerh-96 w-96">
+          <CarouselItem key={idx} className="flex items-center justify-center h-96 w-96">
             <img
               src={img}
-              className="h-full object-contain rounded-xl"
+              className="w-full h-full object-cover rounded-xl"
               alt={`${product.productName} image ${idx}`}
             ></img>
           </CarouselItem>
