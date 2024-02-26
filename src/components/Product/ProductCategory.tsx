@@ -1,6 +1,6 @@
 import { Product } from "@/interfaces/Product";
 import { ProductCard } from "./ProductCard";
-import { limit, where } from "firebase/firestore";
+import { limit, orderBy, where } from "firebase/firestore";
 import { useQuery } from "react-query";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,7 @@ export const ProductCategory = ({ category }: ProductCardProps) => {
     () =>
       fetchStoreDataByField("products", "productCategory", category, [
         where("productCategory", "==", category),
+        orderBy("createdAt", "desc"),
         limit(4),
       ]),
     {
