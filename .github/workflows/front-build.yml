@@ -39,9 +39,6 @@ jobs:
           echo VITE_APP_FIREBASE_APP_ID=${{ secrets.VITE_APP_FIREBASE_APP_ID }} >> .env
           echo VITE_APP_IMP_CODE='${{ secrets.VITE_APP_IMP_CODE }}' >> .env
 
-      - name: Print .env
-        run: cat .env
-
       - name: build
         run: npm run build
 
@@ -62,5 +59,4 @@ jobs:
         env:
           CLOUD_FRONT_ID: ${{ secrets.DEV_AWS_DISTRIBUTION_ID }}
         run: |
-          aws cloudfront create-invalidation \
-            --distribution-id $CLOUD_FRONT_ID --paths /*
+          aws cloudfront create-invalidation --distribution-id $CLOUD_FRONT_ID --paths /*
