@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }: Props) => {
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           setCurrUser({
+            id: doc.id,
             userId: data.userId,
             email: data.email,
             isSeller: data.isSeller,
