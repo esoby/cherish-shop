@@ -16,12 +16,20 @@ const PasswordForm = ({ onSubmit }: PasswordFormProps) => {
     reset,
   } = useForm<{ password: string; newPassword: string }>();
 
+  const Regex = {
+    password: /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/,
+  };
+
   const passwordRegister = register("password", {
-    required: { value: true, message: "이메일을 입력해주세요." },
+    required: { value: true, message: "기존 비밀번호를 입력해주세요." },
   });
 
   const newPasswordRegister = register("newPassword", {
-    required: { value: true, message: "비밀번호를 입력해주세요." },
+    required: { value: true, message: "새로운 비밀번호를 입력해주세요." },
+    pattern: {
+      value: Regex.password,
+      message: "비밀번호는 알파벳, 숫자, 특수문자를 포함하여 8-16자 이내로 작성해주세요.",
+    },
   });
 
   return (

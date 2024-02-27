@@ -3,9 +3,8 @@ import MainContainer from "@/components/Common/MainContainer";
 import Modal from "@/components/Common/Modal";
 import NavBar from "@/components/Common/NavBar";
 import PasswordForm from "@/components/Profile/PasswordForm";
+import UserInfoForm from "@/components/Profile/UserInfoForm";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAlert } from "@/context/AlertContext";
 import { useAuth } from "@/context/AuthContext";
 import { User } from "@/interfaces/User";
@@ -31,50 +30,41 @@ const ProfileUpdate = () => {
       setUserData(data[0]);
     }
   };
-
   useEffect(() => {
     fetchContent();
   }, []);
-
-  const handleChangeName = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-
-    setUserData((prev) => {
-      if (prev) {
-        let newData: User = { ...prev };
-        newData.nickname = value;
-        return newData;
-      }
-      return undefined;
-    });
-  };
 
   useEffect(() => {
     if (auth.currentUser?.providerData[0].providerId === "password") setLoginType(true);
   }, []);
 
-  const handleUpdateUser = async (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ): Promise<void> => {
-    event.preventDefault();
-    if (uid && userData) {
-      await updateStoreData("users", userData?.id, { nickname: userData?.nickname });
+  const handleUpdateName = async (data: any) => {
+    if (uid && userData && data.name) {
+      if (userData.nickname === data.name) {
+        setAlert(true, "Wait!", "기존 닉네임으로 변경할 수 없습니다.");
+        return;
+      }
+      await updateStoreData("users", userData?.id, { nickname: data.name });
       setAlert(true, "", "개인 정보가 수정되었습니다.");
     }
   };
 
-  const handleChangePassword = async (data: any, reset: () => void) => {
+  const handleUpdatePassword = async (data: any, reset: () => void) => {
     let email = auth.currentUser?.email ?? "";
     let currentPassword = data.password;
     let newPassword = data.newPassword;
 
     if (email) {
-      const { user } = await signInWithEmailAndPassword(auth, email, currentPassword);
-      if (user) {
-        await updatePassword(user, newPassword);
-        setAlert(true, "", "비밀번호가 변경되었습니다.");
-        navigate(`/profile/${uid}`);
-        reset();
+      try {
+        const { user } = await signInWithEmailAndPassword(auth, email, currentPassword);
+        if (user) {
+          await updatePassword(user, newPassword);
+          setAlert(true, "", "비밀번호가 변경되었습니다.");
+          navigate(`/profile/${uid}`);
+          reset();
+        }
+      } catch (error) {
+        setAlert(true, "", "기존 비밀번호가 올바르지 않습니다.");
       }
     }
   };
@@ -88,23 +78,8 @@ const ProfileUpdate = () => {
         <MainContainer>
           <h2 className="border-b pb-2 text-2xl font-semibold tracking-tight">개인 정보 수정</h2>
           {userData && (
-            <div className="w-3/5 p-6 flex flex-col gap-4">
-              <div>
-                <Label htmlFor="email">이메일</Label>
-                <Input type="text" disabled readOnly id="email" value={userData.email} />
-              </div>
-              <div>
-                <Label htmlFor="name">닉네임</Label>
-                <Input
-                  type="text"
-                  id="name"
-                  value={userData.nickname}
-                  onChange={handleChangeName}
-                />
-              </div>
-              <Button className="w-full" onClick={handleUpdateUser}>
-                수정하기
-              </Button>
+            <div className="w-3/5 p-6 flex flex-col gap-3">
+              <UserInfoForm onSubmit={handleUpdateName} userData={userData} />
               {loginType && (
                 <>
                   <Modal.Open>
@@ -120,7 +95,7 @@ const ProfileUpdate = () => {
         <Modal.Container>
           <div className="w-full p-10 flex flex-col gap-3">
             <p className="w-full text-center font-semibold text-lg pb-4">비밀번호 변경</p>
-            <PasswordForm onSubmit={handleChangePassword} />
+            <PasswordForm onSubmit={handleUpdatePassword} />
           </div>
         </Modal.Container>
       </Modal>
