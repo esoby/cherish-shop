@@ -5,9 +5,10 @@ Disallow: /mypage/
 Disallow: /products/
 Disallow: /productupdate/
 Disallow: /productupload/
+Disallow: /profileupdate/
 Disallow: /sales/
 Disallow: /order/
 Disallow: /orderhistory/
 Disallow: /orderdetail/
 
-Sitemap: https://dy0r10h1o4v6b.cloudfront.net/sitemap.xml
+Sitemap: https://cherishhh.shop/sitemap.xml
