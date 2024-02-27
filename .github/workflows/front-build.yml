@@ -36,7 +36,7 @@ jobs:
           echo VITE_APP_FIREBASE_PROJECT_ID=${{ secrets.VITE_APP_FIREBASE_PROJECT_ID }} >> .env
           echo VITE_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_APP_FIREBASE_STORAGE_BUCKET }} >> .env
           echo VITE_APP_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_APP_FIREBASE_MESSAGING_SENDER_ID }} >> .env
-          echo VITE_APP_FIREBASE_APP_ID=${{ secrets.VITE_APP_FIREBASE_APP_ID }} >> /.env
+          echo VITE_APP_FIREBASE_APP_ID=${{ secrets.VITE_APP_FIREBASE_APP_ID }} >> .env
           echo VITE_APP_IMP_CODE='${{ secrets.VITE_APP_IMP_CODE }}' >> .env
 
       - name: Print .env
