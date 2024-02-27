@@ -15,6 +15,27 @@ export default defineConfig({
       threshold: 1024,
     }),
   ],
+  define: {
+    "import.meta.env.VITE_APP_FIREBASE_API_KEY": JSON.stringify(
+      process.env.VITE_APP_FIREBASE_API_KEY
+    ),
+    "import.meta.env.VITE_APP_FIREBASE_AUTH_DOMAIN": JSON.stringify(
+      process.env.VITE_APP_FIREBASE_AUTH_DOMAIN
+    ),
+    "import.meta.env.VITE_APP_FIREBASE_PROJECT_ID": JSON.stringify(
+      process.env.VITE_APP_FIREBASE_PROJECT_ID
+    ),
+    "import.meta.env.VITE_APP_FIREBASE_STORAGE_BUCKET": JSON.stringify(
+      process.env.VITE_APP_FIREBASE_STORAGE_BUCKET
+    ),
+    "import.meta.env.VITE_APP_FIREBASE_MESSAGING_SENDER_ID": JSON.stringify(
+      process.env.VITE_APP_FIREBASE_MESSAGING_SENDER_ID
+    ),
+    "import.meta.env.VITE_APP_FIREBASE_APP_ID": JSON.stringify(
+      process.env.VITE_APP_FIREBASE_APP_ID
+    ),
+    "import.meta.env.VITE_APP_IMP_CODE": JSON.stringify(process.env.VITE_APP_IMP_CODE),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src/"),
