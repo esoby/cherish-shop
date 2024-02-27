@@ -2,6 +2,7 @@ import Loading from "@/components/Common/Loading";
 import MainContainer from "@/components/Common/MainContainer";
 import Modal from "@/components/Common/Modal";
 import NavBar from "@/components/Common/NavBar";
+import MetaTag from "@/components/Common/SEOMetaTag";
 import PasswordForm from "@/components/Profile/PasswordForm";
 import UserInfoForm from "@/components/Profile/UserInfoForm";
 import { Button } from "@/components/ui/button";
@@ -73,6 +74,7 @@ const ProfileUpdate = () => {
 
   return (
     <>
+      <MetaTag title="개인 정보 수정" description="개인 정보 수정 페이지입니다." />
       <Modal>
         <NavBar />
         <MainContainer>
