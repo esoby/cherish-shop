@@ -1,9 +1,17 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "../ui/button";
 import { useAlert } from "@/context/AlertContext";
+import { useEffect, useRef } from "react";
 
 const AlertUI = () => {
   const { showAlert, alertTitle, alertMessage, setAlert } = useAlert();
+  const myRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (showAlert && myRef.current) {
+      myRef.current.focus();
+    }
+  }, [showAlert]);
 
   if (!showAlert) return null;
 
@@ -17,7 +25,13 @@ const AlertUI = () => {
         <AlertTitle>{alertTitle}</AlertTitle>
         <AlertDescription>{alertMessage}</AlertDescription>
         <AlertDescription className="text-right">
-          <Button onClick={() => setAlert(false, "", "")}>확인</Button>
+          <Button
+            ref={myRef}
+            onKeyDown={(e) => (e.key === "Enter" ? setAlert(false, "", "") : "")}
+            onClick={() => setAlert(false, "", "")}
+          >
+            확인
+          </Button>
         </AlertDescription>
       </Alert>
     </>
