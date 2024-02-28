@@ -61,13 +61,7 @@ const SaleItem = ({ idx, sale, product, saleStatusList, setSaleStatusList }: Sal
       <div className="p-4 flex gap-2">
         <Select
           value={saleStatusList[idx]}
-          onValueChange={(value) =>
-            setSaleStatusList((prev) => {
-              const newItems = [...prev];
-              newItems[idx] = value;
-              return newItems;
-            })
-          }
+          onValueChange={(value) => mutation.mutate({ id: sale.id, val: value })}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="선택" />
@@ -80,12 +74,6 @@ const SaleItem = ({ idx, sale, product, saleStatusList, setSaleStatusList }: Sal
             <SelectItem value={OrderStatus.SaleCompleted}>판매 완료</SelectItem>
           </SelectContent>
         </Select>
-        <Button
-          variant="outline"
-          onClick={() => mutation.mutate({ id: sale.id, val: saleStatusList[idx] })}
-        >
-          변경
-        </Button>
       </div>
     </Card>
   );
