@@ -15,32 +15,29 @@ const MyPage = () => {
       <NavBar />
       <MainContainer>
         <h2 className="border-b pb-2 text-2xl font-semibold tracking-tight">
-          {user?.nickname}님의 마이페이지
+          {user?.nickname}
+          <span className="font-normal">님의 마이페이지</span>
         </h2>
         <div className="w-[450px]">
           <Link to={`/profile/${user?.userId}`}>
-            <p className="border-b p-4 text-lg font-semibold hover:bg-slate-100">개인 정보 수정</p>
+            <p className="border-b p-4 text-lg hover:bg-slate-100">개인 정보 수정</p>
           </Link>
           {user?.isSeller ? (
             <>
               <Link to={`/products/${user?.userId}`}>
-                <p className="border-b p-4 text-lg font-semibold hover:bg-slate-100">
-                  판매 상품 관리
-                </p>
+                <p className="border-b p-4 text-lg hover:bg-slate-100">판매 상품 관리</p>
               </Link>
               <Link to={`/sales/${user?.userId}`}>
-                <p className="border-b p-4 text-lg font-semibold hover:bg-slate-100">
-                  판매 내역 관리
-                </p>
+                <p className="border-b p-4 text-lg hover:bg-slate-100">판매 내역 관리</p>
               </Link>
             </>
           ) : (
             <Link to={`/orderhistory/${user?.userId}`}>
-              <p className="border-b p-4 text-lg font-semibold hover:bg-slate-100">주문 내역</p>
+              <p className="border-b p-4 text-lg hover:bg-slate-100">주문 내역</p>
             </Link>
           )}
           <button onClick={logout} className="w-full text-left">
-            <p className="border-b p-4 text-lg font-semibold hover:bg-slate-100">로그아웃</p>
+            <p className="border-b p-4 text-lg hover:bg-slate-100">로그아웃</p>
           </button>
         </div>
       </MainContainer>
