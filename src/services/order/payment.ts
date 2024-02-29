@@ -10,8 +10,8 @@ export const createPaymentData = ({
   orderPrice: number;
 }): PortOne.PaymentRequest => {
   return {
-    storeId: "store-d2497df4-ff5f-445c-82ad-177f0570aa47",
-    channelKey: "channel-key-1a6dccc0-bc6a-4b8c-96e6-18f7d9c9a928",
+    storeId: import.meta.env.VITE_APP_PORTONE_STORE_ID,
+    channelKey: import.meta.env.VITE_APP_PORTONE_CHANNEL_KEY,
     paymentId: `payment-${oid}`,
     orderName: orderName,
     totalAmount: orderPrice,
