@@ -29,7 +29,9 @@ const OrderItem = ({ order, product }: OrderItemProps) => {
           <CardTitle className="text-lg m-0 hover:text-slate-500">{product.productName}</CardTitle>
         </Link>
         <CardDescription className="m-0">{sellerName}</CardDescription>
-        <CardDescription className="text-gray-700">가격 : {product.productPrice}</CardDescription>
+        <CardDescription className="text-gray-700">
+          가격 : {"productPrice" in order ? order.productPrice : product.productPrice}
+        </CardDescription>
         <CardDescription className="text-gray-700">
           수량 : {"productQuantity" in order ? order.productQuantity : order.cartQuantity}
         </CardDescription>
