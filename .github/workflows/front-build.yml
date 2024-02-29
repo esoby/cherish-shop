@@ -37,7 +37,8 @@ jobs:
           echo VITE_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_APP_FIREBASE_STORAGE_BUCKET }} >> .env
           echo VITE_APP_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_APP_FIREBASE_MESSAGING_SENDER_ID }} >> .env
           echo VITE_APP_FIREBASE_APP_ID=${{ secrets.VITE_APP_FIREBASE_APP_ID }} >> .env
-          echo VITE_APP_IMP_CODE='${{ secrets.VITE_APP_IMP_CODE }}' >> .env
+          echo VITE_APP_PORTONE_STORE_ID=${{ secrets.VITE_APP_PORTONE_STORE_ID }} >> .env
+          echo VITE_APP_PORTONE_CHANNEL_KEY=${{ secrets.VITE_APP_PORTONE_CHANNEL_KEY }} >> .env
 
       - name: build
         run: npm run build
