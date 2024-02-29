@@ -36,16 +36,12 @@ export const deleteCheckedCartItems = async ({
   checkedItems: boolean[];
 }) => {
   if (cartData) {
-    try {
-      if (!checkedItems.filter((v) => v).length) return false;
-      const checkedItemlst = cartData.filter((_, index) => checkedItems[index]);
+    if (!checkedItems.filter((v) => v).length) return false;
+    const checkedItemlst = cartData.filter((_, index) => checkedItems[index]);
 
-      for (const item of checkedItemlst) {
-        await deleteStoreData("cart", item.id);
-      }
-      return true;
-    } catch (error) {
-      throw error;
+    for (const item of checkedItemlst) {
+      await deleteStoreData("cart", item.id);
     }
+    return true;
   }
 };
