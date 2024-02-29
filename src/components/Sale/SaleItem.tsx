@@ -6,24 +6,21 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
 import { Card, CardTitle, CardDescription } from "../ui/card";
 import { useMutation, useQueryClient } from "react-query";
 import { updateStoreData } from "@/services/firebase/firestore";
 import { useAlert } from "@/context/AlertContext";
 import { Order, OrderStatus } from "@/interfaces/Order";
 import { Product } from "@/interfaces/Product";
-import { Dispatch, SetStateAction } from "react";
 
 interface SaleItemProps {
   idx: number;
   sale: Order;
   product: Product;
   saleStatusList: string[];
-  setSaleStatusList: Dispatch<SetStateAction<string[]>>;
 }
 
-const SaleItem = ({ idx, sale, product, saleStatusList, setSaleStatusList }: SaleItemProps) => {
+const SaleItem = ({ idx, sale, product, saleStatusList }: SaleItemProps) => {
   const queryClient = useQueryClient();
 
   const { setAlert } = useAlert();

@@ -10,11 +10,7 @@ import { increment } from "firebase/firestore";
 
 // 상품 재고 변동
 export const updateProductQuantity = async (pid: string, num: number) => {
-  try {
-    await updateStoreData("products", pid, { productQuantity: increment(num) });
-  } catch (error) {
-    throw error;
-  }
+  await updateStoreData("products", pid, { productQuantity: increment(num) });
 };
 
 // 재고 감소 및 임시 재고 데이터 저장
@@ -39,7 +35,6 @@ export const saveItemsToTempStock = async (
     // 체크된 상품만 임시 재고에 추가
     const checkedList = cartData.filter((_, idx) => checkedItems[idx]);
 
-    console.log(checkedList);
     // 상품 수량 변경
     await Promise.all(
       checkedList.map((item) => updateProductQuantity(item.productId, -1 * item.cartQuantity))

@@ -57,7 +57,6 @@ const SalesManagement = () => {
                 sale={sale}
                 product={productInOrderList[idx]}
                 saleStatusList={saleStatusList}
-                setSaleStatusList={setSaleStatusList}
               />
             ))}
         </div>
