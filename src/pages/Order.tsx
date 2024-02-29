@@ -64,13 +64,13 @@ const Order = () => {
   const handleOrderPayment: SubmitHandler<OrderFormFields> = async (_) => {
     if (orderCartItems && orderProducts && oid) {
       const orderName = `${orderProducts[0].productName} 외 ${orderProducts.length - 1} 상품`;
-
       const response = await PortOne.requestPayment(
         createPaymentData({ oid, orderName, orderPrice: totalPrice })
       );
-      if (response && response.code != null) {
+      if (!response || response?.code != null) {
         setAlert(true, "결제 실패", "다시 시도해 주세요.");
         await handleOrderCancelled();
+        return;
       }
       setAlert(true, "Complete!", "결제가 완료되었습니다.");
       await handleSuccessPayment();
@@ -107,6 +107,7 @@ const Order = () => {
   };
 
   const handleOrderCancelled = async () => {
+    setAlert(true, "", "구매가 취소되었습니다.");
     if (oid) await restoreTempStock(oid);
     navigate("/");
   };

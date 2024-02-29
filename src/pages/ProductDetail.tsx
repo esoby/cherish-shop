@@ -106,9 +106,8 @@ const ProductDetail = () => {
     }
   };
 
-  async function handleOrderStart(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ): Promise<void> {
+  // 바로 구매 버튼 클릭
+  const handleOrderStart = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     if (!user) {
       setAlert(true, "Wait!", "로그인 후 이용할 수 있습니다.");
@@ -116,11 +115,16 @@ const ProductDetail = () => {
     }
     if (product) {
       const newOid = new Date().getTime().toString();
-      await saveItemToTempStock(product.id, String(newOid)); // 임시 재고에 상품 저장
-      setOid(newOid);
+      try {
+        await saveItemToTempStock(String(newOid), product.id); // 임시 재고에 상품 저장
+        setOid(newOid);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }
+  };
 
+  // 결제하기 버튼 클릭
   const handleOrderPayment: SubmitHandler<OrderFormFields> = async (_) => {
     const flag = confirm("결제하시겠습니까?");
     if (!flag) return;
@@ -131,9 +135,10 @@ const ProductDetail = () => {
       const response = await PortOne.requestPayment(
         createPaymentData({ oid, orderName, orderPrice })
       );
-      if (response && response.code != null) {
+      if (!response || response?.code != null) {
         setAlert(true, "결제 실패", "다시 시도해 주세요.");
         await handleOrderCancelled();
+        return;
       }
       setAlert(true, "Complete!", "결제가 완료되었습니다.");
       await handleSuccessPayment();
@@ -156,8 +161,8 @@ const ProductDetail = () => {
   };
 
   const handleOrderCancelled = async () => {
+    setAlert(true, "", "구매가 취소되었습니다.");
     if (oid) await restoreTempStock(oid);
-    window.location.reload();
   };
 
   return (
@@ -224,20 +229,13 @@ const ProductDetail = () => {
         {/* 바로 구매 Modal */}
         <Modal.Container>
           <Modal.Header>
-            <button onClick={() => handleOrderCancelled}>
+            <button onClick={() => handleOrderCancelled()}>
               <Modal.Close />
             </button>
           </Modal.Header>
           <Modal.Body>
             <h4 className="scroll-m-20 text-xl font-semibold tracking-tight mb-4">주문서 입력</h4>
             <OrderForm onSubmit={handleOrderPayment} />
-            <Button
-              variant="outline"
-              onClick={() => handleOrderCancelled}
-              className="w-full mt-2 mb-8"
-            >
-              취소하기
-            </Button>
           </Modal.Body>
         </Modal.Container>
       </Modal>
