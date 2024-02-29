@@ -18,10 +18,10 @@ const Container = (props: { children: any }) => {
       {open && (
         <>
           <div
-            className="w-screen h-screen bg-black fixed top-0 left-0 z-30 opacity-70"
+            className="w-screen h-screen bg-black fixed top-0 left-0 z-20 opacity-50"
             onClick={() => toggle(!open)}
           ></div>
-          <div className="w-3/5 absolute z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg overflow-hidden bg-white">
+          <div className="w-3/5 absolute z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg overflow-hidden bg-white">
             {props.children}
           </div>
         </>
@@ -59,7 +59,9 @@ const Open = (props: { children: any }) => {
 const Body = (props: { children: any }) => {
   const { open } = useContext(ModalContext);
 
-  return open && <div className="w-full flex flex-col items-center px-14">{props.children}</div>;
+  return (
+    open && <div className="w-full flex flex-col items-center px-14 pb-10">{props.children}</div>
+  );
 };
 
 const Footer = (props: { children: ReactElement<any> }) => {
