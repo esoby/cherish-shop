@@ -32,7 +32,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <Card
-      className="w-60 flex flex-col p-5 h-fit gap-1 cursor-pointer"
+      className="w-60 flex flex-col p-5 h-fit gap-1 cursor-pointer transition-all duration-200 ease-in-out transform hover:scale-105"
       onClick={(e) => {
         e.stopPropagation();
         navigate(

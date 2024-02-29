@@ -38,7 +38,7 @@ export const ProductCategory = ({ category }: ProductCardProps) => {
 
   return (
     <section
-      className="w-full h-[460px] border-b hover:bg-slate-100 overflow-scroll cursor-pointer p-4 py-8 relative"
+      className="w-full h-fit min-h-[460px]  border-b hover:bg-slate-100 overflow-scroll cursor-pointer p-4 py-8 relative"
       onClick={() => navigate(`/category/${category}`)}
     >
       <h4 className="text-xl font-semibold tracking-tight absolute flex gap-4 items-center left-6 top-6">
