@@ -1,8 +1,24 @@
+---
+layout:
+  title:
+    visible: true
+  description:
+    visible: false
+  tableOfContents:
+    visible: true
+  outline:
+    visible: true
+  pagination:
+    visible: true
+---
+
 # Cherish 🐈‍⬛
 
-#### ☁️ 서비스 바로가기
+<figure><img src=".gitbook/assets/readmemain.png" alt=""><figcaption></figcaption></figure>
 
-[👉🏻 shop Cherish](https://cherishhh.shop/)
+### ☁️ 서비스 바로가기
+
+[cherishhh.shop](https://cherishhh.shop/)
 
 #### 📍 테스트 계정 - 판매 회원
 
@@ -18,20 +34,20 @@ ID: test1@gmail.com
 PW: test111!
 ```
 
-#### 📚 개발 일지
+### 📚 개발 일지
 
-👉🏻 Notion
+Notion
 
-### 프로젝트 개요
+### ✏️ 프로젝트 개요
 
 * 이것저것 섞여있는 중고 마켓은 피곤할 때! 취향이 비슷한 사람들이 모여 취향 저격 아이템만 알차게 모아둔 오픈 마켓
 
-### 진행 기간
+### 🗓 진행 기간
 
 * 2024.01.24 \~ 2024.02.15 기능 구현
 * 2024.02.16 \~ 리팩토링 진행 중
 
-### 주요 기능 소개
+### 📈 주요 기능 소개
 
 * 로그인
 * 회원가입
@@ -44,40 +60,32 @@ PW: test111!
 * 개인 정보 수정
 * 로그아웃
 
-### 기획
+### 📑 기획
 
-#### 요구사항 명세
-
-[👉🏻 Link](undefined.md)
+#### [요구사항 명세](cherish/undefined.md)
 
 #### 와이어 프레임
 
-[👉🏻 Link](https://cherishhh.shop/,)
-
 #### 유저 플로우
 
-[👉🏻 Link](https://cherishhh.shop/,)
-
-### 개발 환경
+### 🖥 개발 환경
 
 #### 기술 스택
 
-![](https://img.shields.io/badge/GitHub-181717?style=for-the-badge\&logo=GitHub\&logoColor=white)
-
-#### [기술적 의사 결정](undefined-1.md)
+#### [기술적 의사 결정](https://esoby.gitbook.io/cherish/undefined)
 
 #### 서비스 아키텍처
 
-#### 컨벤션
+#### [컨벤션](cherish/undefined-2.md)
 
-[👉🏻 Link](https://cherishhh.shop/,)
 
-### 프로젝트 폴더 구조
 
-### 트러블 슈팅
+### 📦 프로젝트 폴더 구조
 
-[👉🏻 Link](https://cherishhh.shop/,)
+```
+// Some code
+```
 
-### 리팩토링
+### ‼️ [트러블 슈팅](cherish/undefined-3.md)
 
-[👉🏻 Link](https://cherishhh.shop/,)
+### ♻️ [리팩토링](cherish/undefined-4.md)
