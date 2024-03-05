@@ -94,9 +94,9 @@ PW: test111!
 
 ## 📈 기능 소개 및 시연
 
-* 홈 / 카테고리 / 상품 상세 보기
+* 홈 & 상품 상세 보기 / 카테고리별 상품 목록 & 정렬
 
-<div align="left">
+<div align="center">
 
 <figure><img src=".gitbook/assets/2024-03-056.47.23-ezgif.com-speed (1).gif" alt="" width="360"><figcaption></figcaption></figure>
 
@@ -108,7 +108,7 @@ PW: test111!
 
 * 회원가입 / 로그인 & 로그아웃
 
-<div>
+<div align="center">
 
 <figure><img src=".gitbook/assets/2024-03-057.11.55-ezgif.com-speed.gif" alt="" width="360"><figcaption></figcaption></figure>
 
@@ -120,7 +120,7 @@ PW: test111!
 
 * 개인 정보 수정 - 닉네임 수정 / 비밀번호 수정
 
-<div>
+<div align="center" data-full-width="false">
 
 <figure><img src=".gitbook/assets/2024-03-057.24.42-ezgif.com-speed.gif" alt="" width="360"><figcaption></figcaption></figure>
 
@@ -132,7 +132,7 @@ PW: test111!
 
 * (일반 계정) 장바구니 추가 / 수량 수정 & 항목 삭제
 
-<div>
+<div align="center" data-full-width="false">
 
 <figure><img src=".gitbook/assets/2024-03-057.38.09-ezgif.com-speed.gif" alt="" width="360"><figcaption></figcaption></figure>
 
@@ -144,7 +144,7 @@ PW: test111!
 
 * (일반 계정) 장바구니에서 주문 & 결제 / 상품 페이지에서 바로 주문 & 결제
 
-<div>
+<div align="center" data-full-width="false">
 
 <figure><img src=".gitbook/assets/2024-03-057.53.24-ezgif.com-speed (3).gif" alt="" width="360"><figcaption></figcaption></figure>
 
@@ -156,11 +156,15 @@ PW: test111!
 
 * (일반 계정) 주문 내역 & 주문 상세 내역 & 주문 취소
 
+<div align="center" data-full-width="false">
+
 <figure><img src=".gitbook/assets/2024-03-058.10.50-ezgif.com-speed.gif" alt="" width="360"><figcaption></figcaption></figure>
+
+</div>
 
 * (판매 계정) 판매 등록 / 수정 & 삭제
 
-<div>
+<div align="center" data-full-width="false">
 
 <figure><img src=".gitbook/assets/2024-03-058.25.49-ezgif.com-speed.gif" alt="" width="360"><figcaption></figcaption></figure>
 
@@ -172,7 +176,11 @@ PW: test111!
 
 * (판매 계정) 판매 내역 & 판매 상태 변경
 
+<div align="center" data-full-width="true">
+
 <figure><img src=".gitbook/assets/2024-03-058.15.23-ezgif.com-speed.gif" alt="" width="360"><figcaption></figcaption></figure>
+
+</div>
 
 
 
