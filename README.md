@@ -20,43 +20,38 @@ ID: test1@gmail.com
 PW: test111!
 ```
 
-\
-
+</br>
 
 ## 💻 프로젝트 소개
 
-* _이것저것 잡다하게 섞여있는 중고 마켓은 피곤할 때 !_
-* **취향 저격 아이템만 알차게 모아둔 오픈 마켓 🖤**
+- _이것저것 잡다하게 섞여있는 중고 마켓은 피곤할 때 !_
+- **취향 저격 아이템만 알차게 모아둔 오픈 마켓 🖤**
 
-\
-
+</br>
 
 ## 🗓 진행 기간
 
-* ✨ 2024.01.24 \~ 2024.02.15 기능 구현
-* ♻️ 2024.02.16 \~ 리팩토링 진행 중
+- ✨ 2024.01.24 \~ 2024.02.15 기능 구현
+- ♻️ 2024.02.16 \~ 리팩토링 진행 중
 
-\
-
+</br>
 
 ## 📑 기획
 
-* [와이어 프레임](https://www.figma.com/file/utwthHiKt2P0zDmyOIx1sr/Commerce-Wire-Frame?type=design\&mode=design\&t=HHQiNRbYRC4yzdmi-1)
-* [유저 플로우](https://www.figma.com/file/JIyzy4WBcvsmvQ0y8yRF5J/Commerce-User-Flow?type=whiteboard\&t=HHQiNRbYRC4yzdmi-1)
+- [와이어 프레임](https://www.figma.com/file/utwthHiKt2P0zDmyOIx1sr/Commerce-Wire-Frame?type=design&mode=design&t=HHQiNRbYRC4yzdmi-1)
+- [유저 플로우](https://www.figma.com/file/JIyzy4WBcvsmvQ0y8yRF5J/Commerce-User-Flow?type=whiteboard&t=HHQiNRbYRC4yzdmi-1)
 
-\
-
+</br>
 
 ## 🖥 개발 환경
 
-* 서비스 아키텍처
+- 서비스 아키텍처
 
-<figure><img src=".gitbook/assets/architecture (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/architecture.png" alt=""><figcaption></figcaption></figure>
 
-* [**기술적 의사 결정**](https://esoby.gitbook.io/cherish/cherish/implement)
+- [**기술적 의사 결정**](https://esoby.gitbook.io/cherish/cherish/tech-decision)
 
-\
-
+</br>
 
 ## 📦 프로젝트 폴더 구조
 
@@ -92,72 +87,61 @@ PW: test111!
 └──🔨 Config
 ```
 
-\
-
+</br>
 
 ## 📈 기능 소개 및 시연
 
-* 홈 & 상품 상세 보기 / 카테고리별 상품 목록 & 정렬
+- 홈 & 상품 상세 보기 / 카테고리별 상품 목록 & 정렬
 
 <div align="center">
 
 <figure><img src=".gitbook/assets/home.gif" alt="" width="360"><figcaption></figcaption></figure>
 
- 
-
 <figure><img src=".gitbook/assets/category.gif" alt="" width="360"><figcaption></figcaption></figure>
 
 </div>
 
-* 회원가입 / 로그인 & 로그아웃
+- 회원가입 / 로그인 & 로그아웃
 
 <div align="center">
 
 <figure><img src=".gitbook/assets/signup.gif" alt="" width="360"><figcaption></figcaption></figure>
 
- 
-
 <figure><img src=".gitbook/assets/login.gif" alt="" width="360"><figcaption></figcaption></figure>
 
 </div>
 
-* 개인 정보 수정 - 닉네임 수정 / 비밀번호 수정
+- 개인 정보 수정 - 닉네임 수정 / 비밀번호 수정
 
 <div align="center" data-full-width="false">
 
 <figure><img src=".gitbook/assets/updatename.gif" alt="" width="360"><figcaption></figcaption></figure>
 
- 
-
 <figure><img src=".gitbook/assets/updatepwd.gif" alt="" width="360"><figcaption></figcaption></figure>
 
 </div>
 
-* (일반 계정) 장바구니 추가 / 수량 수정 & 항목 삭제
+- (일반 계정) 장바구니 추가 / 수량 수정 & 항목 삭제
 
 <div align="center" data-full-width="false">
 
 <figure><img src=".gitbook/assets/addcart.gif" alt="" width="360"><figcaption></figcaption></figure>
 
- 
-
 <figure><img src=".gitbook/assets/updatecart.gif" alt="" width="360"><figcaption></figcaption></figure>
 
 </div>
 
-* (일반 계정) 장바구니에서 주문 & 결제 / 상품 페이지에서 바로 주문 & 결제
+- (일반 계정) 장바구니에서 주문 & 결제 / 상품 페이지에서 바로 주문 & 결제
 
 <div align="center" data-full-width="false">
 
 <figure><img src=".gitbook/assets/cartorder.gif" alt="" width="360"><figcaption></figcaption></figure>
 
- 
-
 <figure><img src=".gitbook/assets/productorder.gif" alt="" width="360"><figcaption></figcaption></figure>
 
 </div>
 
-* (일반 계정) 주문 내역 & 주문 상세 내역 & 주문 취소
+- (일반 계정) 주문 내역 & 주문 상세 내역 & 주문 취소
 
 <div align="center" data-full-width="false">
 
@@ -165,19 +149,17 @@ PW: test111!
 
 </div>
 
-* (판매 계정) 판매 등록 / 수정 & 삭제
+- (판매 계정) 판매 등록 / 수정 & 삭제
 
 <div align="center" data-full-width="false">
 
 <figure><img src=".gitbook/assets/addproduct.gif" alt="" width="360"><figcaption></figcaption></figure>
 
- 
-
 <figure><img src=".gitbook/assets/updateproduct.gif" alt="" width="360"><figcaption></figcaption></figure>
 
 </div>
 
-* (판매 계정) 판매 내역 & 판매 상태 변경
+- (판매 계정) 판매 내역 & 판매 상태 변경
 
 <div align="center" data-full-width="true">
 
@@ -185,18 +167,18 @@ PW: test111!
 
 </div>
 
-* 구현 내용 자세히 보기\
+- [**구현 내용 자세히 보기**](https://esoby.gitbook.io/cherish/cherish/implement)
 
+</br>
 
 ## ❗️ 트러블 슈팅
 
-* 자세히 보기
+- [**자세히 보기**](https://esoby.gitbook.io/cherish/cherish/trouble-shooting)
 
-\
-
+</br>
 
 ## ♻️ 리팩토링
 
-* 자세히 보기
+- [**자세히 보기**](https://esoby.gitbook.io/cherish/cherish/refactoring)
 
-\
+</br>
