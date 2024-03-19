@@ -125,7 +125,7 @@ const ProductDetail = () => {
   };
 
   // 결제하기 버튼 클릭
-  const handleOrderPayment: SubmitHandler<OrderFormFields> = async (_) => {
+  const handleOrderPayment: SubmitHandler<OrderFormFields> = async () => {
     const flag = confirm("결제하시겠습니까?");
     if (!flag) return;
 
@@ -220,7 +220,7 @@ const ProductDetail = () => {
           <h3 className="mt-24 scroll-m-20 text-xl font-semibold tracking-tight w-full pl-3 mb-4">
             {anotherProduct?.length ? "다른 친구들 구경하기" : ""}
           </h3>
-          <div className="w-full overflow-scroll flex gap-4">
+          <div className="w-full overflow-x-auto flex gap-4">
             {anotherProduct?.map((pro, i) => (
               <ProductCard product={pro} key={i}></ProductCard>
             ))}
